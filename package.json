@@ -1,5 +1,6 @@
 {
   "name": "travis-ci",
+  "version": "0.0.1",
   "main": "lib/index",
   "repository": "https://github.com/pwmckenna/node-travis-ci",
   "dependencies": {

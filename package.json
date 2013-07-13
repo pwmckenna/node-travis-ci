@@ -7,9 +7,9 @@
     "type": "git",
     "url": "git://github.com/pwmckenna/node-travis-ci.git"
   },
-  "keywords": {
+  "keywords": [
     "travis-ci"
-  },
+  ],
   "author": "Patrick Williams <pwmckenna@gmail.com>",
   "license": "BSD",
   "readmeFilename": "README.md",

@@ -1,8 +1,20 @@
 {
   "name": "travis-ci",
   "version": "0.0.1",
+  "description": "node library to access the Travis-CI API",
   "main": "lib/index",
-  "repository": "https://github.com/pwmckenna/node-travis-ci",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/pwmckenna/node-travis-ci.git"
+  },
+  "keywords": {
+    "travis-ci"
+  },
+  "author": "Patrick Williams <pwmckenna@gmail.com>",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "homepage": "https://github.com/pwmckenna/node-travis-ci",
+  "bugs": "https://github.com/pwmckenna/node-travis-ci/issues",
   "dependencies": {
     "lodash": "~1.3.1",
     "request": "~2.22.0"

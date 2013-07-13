@@ -3,7 +3,7 @@ language: node_js
 node_js:
 - 0.10.1
 script:
-- grunt travis
+- ./node_modules/grunt-cli/bin/grunt test
 env:
   global:
     secure: |-

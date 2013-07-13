@@ -1,0 +1,12 @@
+---
+language: node_js
+node_js:
+- 0.10.1
+script:
+- grunt travis
+env:
+  global:
+    secure: |-
+      OJiB1iVWp9yfP11K1ZPqO2MRpDWuQ1XrircIIjQBadMJkXDaVpYd0peJe8Nd
+      1q/aDznIVgNs3ICXOiTHWVikCnwZqyHCz4g+YGne7DmQbC5VtfVHh6IPlrtW
+      9c2EZSN41oIs2oVXVJlrKPVskF0ZlXqC+LFKG3HPURBbyMeyFHI=

@@ -1,3 +1,6 @@
+/node_modules/
+files
+
 lib-cov
 *.seed
 *.log
@@ -6,9 +9,6 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.sqlite
 
-pids
-logs
-results
-
-npm-debug.log
+.env

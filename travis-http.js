@@ -2,8 +2,6 @@
 
 var request = require('request');
 
-var TRAVIS_API_URL_BASE = 'https://api.travis-ci.org';
-
 var generateAuthenticatedHeaders = function (accessToken) {
     var headers = {
         'Accept': 'application/vnd.travis-ci.2+json, */*; q=0.01'
@@ -14,7 +12,9 @@ var generateAuthenticatedHeaders = function (accessToken) {
     return headers;
 };
 
-var TravisHttp = function () {};
+var TravisHttp = function (endpoint) {
+    this.apiEndpoint = endpoint;
+};
 
 TravisHttp.prototype.get = function (path, qs, callback) {
     if (typeof qs === 'function') {
@@ -23,12 +23,12 @@ TravisHttp.prototype.get = function (path, qs, callback) {
     }
 
     request.get({
-        url: TRAVIS_API_URL_BASE + path,
+        url: this.apiEndpoint + path,
         json: qs,
         headers: generateAuthenticatedHeaders(this.accessToken)
     }, function (err, res) {
         if (err || res.statusCode !== 200) {
-            callback(res.body || res.statusCode);
+            callback(JSON.stringify(res.body) || res.statusCode);
         } else {
             callback(null, res.body);
         }
@@ -42,12 +42,12 @@ TravisHttp.prototype.post = function (path, form, callback) {
     }
 
     request.post({
-        url: TRAVIS_API_URL_BASE + path,
+        url: this.apiEndpoint + path,
         json: form,
         headers: generateAuthenticatedHeaders(this.accessToken)
     }, function (err, res) {
         if (err || res.statusCode !== 200) {
-            callback(res.body || res.statusCode);
+            callback(JSON.stringify(res.body) || res.statusCode);
         } else {
             callback(null, res.body);
         }
@@ -60,12 +60,12 @@ TravisHttp.prototype.put = function (path, json, callback) {
     }
 
     request.put({
-        url: TRAVIS_API_URL_BASE + path,
+        url: this.apiEndpoint + path,
         json: json,
         headers: generateAuthenticatedHeaders(this.accessToken)
     }, function (err, res) {
         if (err || res.statusCode !== 200) {
-            callback(res.body || res.statusCode);
+            callback(JSON.stringify(res.body) || res.statusCode);
         } else {
             callback(null, res.body);
         }

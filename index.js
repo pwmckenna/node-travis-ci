@@ -4,6 +4,7 @@ var _ = require('lodash');
 var util = require('util');
 var _s = require('underscore.string');
 var assert = require('assert');
+var TravisHttp = require('./travis-http');
 // { uri: '/stats/tests',
 //     verb: 'GET',
 //     doc: '',
@@ -78,7 +79,13 @@ var createObjectChain = function (obj, names) {
     return last;
 };
 
+var TRAVIS_ENDPOINT = 'https://api.travis-ci.org';
+var TRAVIS_PRO_ENDPOINT = 'https://api.travis-ci.com';
+
 var TravisClient = function (config) {
+
+    TravisHttp.call(this, config.pro ? TRAVIS_PRO_ENDPOINT : TRAVIS_ENDPOINT);
+
     if (!config.hasOwnProperty('version')) {
         throw 'must specify api version';
     }
@@ -94,8 +101,6 @@ var TravisClient = function (config) {
     var routePathApis = _.groupBy(routes, 'path');
     _.each(routePathApis, this.addRoute, this);
 };
-
-var TravisHttp = require('./travis-http');
 util.inherits(TravisClient, TravisHttp);
 
 TravisClient.prototype.authenticate = function (token, callback) {
@@ -121,6 +126,7 @@ TravisClient.prototype.addRoute = function (routes) {
     var last = createObjectChain(this, _.initial(path));
 
     var apiFunctionWrapper = function (msg, callback) {
+        // Make msg an optional argument
         if (_.isFunction(msg) && _.isUndefined(callback)) {
             callback = msg;
             msg = {};
@@ -134,11 +140,25 @@ TravisClient.prototype.addRoute = function (routes) {
             return callback(new Error('expected msg to be an object'));
         }
 
+        // Get all routes that have their argument list satisfied, 
+        // regardless of extra parameters.
         var matchingRoutes = getRoutesWithSatisfiedArgumentRequirements(routes, msg);
 
         if (matchingRoutes.length === 0) {
             return callback(new Error('invalid arguments'));
         } else {
+            // We'll blindly use the route that has the most satisfied arguments
+            // 
+            // So if we find ourselves with the following routes and arguments:
+            // GET /repos/:owner_name/:name/builds/:id
+            // GET /repos/:owner_name/:name/builds
+            // {
+            //     owner_name:
+            //     name:
+            //     id:
+            // }
+            // 
+            // ...we'll pick the first route, even though the second one matches as well.
             var route = _.last(_.sortBy(matchingRoutes, function (route) {
                 return route.args.length;
             }));
@@ -146,7 +166,9 @@ TravisClient.prototype.addRoute = function (routes) {
                 return callback(new Error('authentication required'));
             }
 
+            // Url args are the ones that aren't filled in as part of the route.
             var args = _.omit(msg, route.args);
+            // Replace the :args with the args provided.
             var url = fillRouteArguments(route, msg);
 
             switch (route.verb) {

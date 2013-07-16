@@ -21,8 +21,10 @@ describe('travis ci user api test suite', function () {
 
             var token = res.access_token;
 
-            this.privateTravis.authenticate(token);
-            done();
+            this.privateTravis.authenticate(token, function (err) {
+                if (err) { return done(new Error(err)); }
+                done();
+            });
         }.bind(this));
     });
 

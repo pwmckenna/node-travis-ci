@@ -3,7 +3,7 @@
 var _ = require('lodash');
 var util = require('util');
 var _s = require('underscore.string');
-
+var assert = require('assert');
 // { uri: '/stats/tests',
 //     verb: 'GET',
 //     doc: '',
@@ -97,6 +97,22 @@ var TravisClient = function (config) {
 
 var TravisHttp = require('./travis-http');
 util.inherits(TravisClient, TravisHttp);
+
+TravisClient.prototype.authenticate = function (token, callback) {
+    assert(!this._authenticating, 'cannot authenticate until previous authentication has completed');
+    this._authenticating = true;
+    this.setAccessToken(token);
+
+    this.get('/users', function (err) {
+        this._authenticating = false;
+        this._authenticated = !err;
+        callback(err);
+    }.bind(this));
+};
+
+TravisClient.prototype.isAuthenticated = function () {
+    return this._authenticated || false;
+};
 
 TravisClient.prototype.addRoute = function (routes) {
     var path = routes[0].path;

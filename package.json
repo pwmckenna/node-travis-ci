@@ -8,7 +8,13 @@
     "url": "git://github.com/pwmckenna/node-travis-ci.git"
   },
   "keywords": [
-    "travis-ci"
+    "travis-ci",
+    "travis",
+    "travisci",
+    "ci",
+    "continuous",
+    "integration",
+    "api"
   ],
   "author": "Patrick Williams <pwmckenna@gmail.com>",
   "license": "BSD",

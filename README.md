@@ -35,6 +35,35 @@ travis.auth.github({
 });
 ```
 
+### [Accounts](https://api.travis-ci.org/docs/#Accounts)
+
+```js
+travis.accounts(function (err, res) {
+    // res => {
+    //     accounts: [
+    //         {
+    //             id: 5186,
+    //             name: 'Patrick Williams',
+    //             login: 'pwmckenna',
+    //             type: 'user',
+    //             repos_count: 37
+    //         },
+    //         ...
+    //     ]
+    // }
+})
+```
+
+### [Broadcasts](https://api.travis-ci.org/docs/#Broadcasts)
+
+```js
+travis.broadcasts(function (err, res) {
+    // res => {
+    //     broadcasts: []
+    // }
+})
+```
+
 ### [Repos](https://api.travis-ci.org/docs/#Repos)
 
 ```js

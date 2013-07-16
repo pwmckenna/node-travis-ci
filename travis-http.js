@@ -3,7 +3,6 @@
 var request = require('request');
 
 var TRAVIS_API_URL_BASE = 'https://api.travis-ci.org';
-// var TRAVIS_PRO_API_URL_BASE = 'https://api.travis-ci.com';
 
 var generateAuthenticatedHeaders = function (accessToken) {
     var headers = {

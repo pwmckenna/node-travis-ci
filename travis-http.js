@@ -16,7 +16,7 @@ var TravisHttp = function (endpoint) {
     this.apiEndpoint = endpoint;
 };
 
-TravisHttp.prototype.get = function (path, qs, callback) {
+TravisHttp.prototype._get = function (path, qs, callback) {
     if (typeof qs === 'function') {
         callback = qs;
         qs = undefined;
@@ -25,7 +25,7 @@ TravisHttp.prototype.get = function (path, qs, callback) {
     request.get({
         url: this.apiEndpoint + path,
         json: qs,
-        headers: generateAuthenticatedHeaders(this.accessToken)
+        headers: generateAuthenticatedHeaders(this._getAccessToken())
     }, function (err, res) {
         if (err || res.statusCode !== 200) {
             callback(JSON.stringify(res.body) || res.statusCode);
@@ -35,7 +35,7 @@ TravisHttp.prototype.get = function (path, qs, callback) {
     });
 };
 
-TravisHttp.prototype.post = function (path, form, callback) {
+TravisHttp.prototype._post = function (path, form, callback) {
     if (typeof form === 'function') {
         callback = form;
         form = undefined;
@@ -44,7 +44,7 @@ TravisHttp.prototype.post = function (path, form, callback) {
     request.post({
         url: this.apiEndpoint + path,
         json: form,
-        headers: generateAuthenticatedHeaders(this.accessToken)
+        headers: generateAuthenticatedHeaders(this._getAccessToken())
     }, function (err, res) {
         if (err || res.statusCode !== 200) {
             callback(JSON.stringify(res.body) || res.statusCode);
@@ -53,7 +53,7 @@ TravisHttp.prototype.post = function (path, form, callback) {
         }
     });
 };
-TravisHttp.prototype.put = function (path, json, callback) {
+TravisHttp.prototype._put = function (path, json, callback) {
     if (typeof json === 'function') {
         callback = json;
         json = undefined;
@@ -62,7 +62,7 @@ TravisHttp.prototype.put = function (path, json, callback) {
     request.put({
         url: this.apiEndpoint + path,
         json: json,
-        headers: generateAuthenticatedHeaders(this.accessToken)
+        headers: generateAuthenticatedHeaders(this._getAccessToken())
     }, function (err, res) {
         if (err || res.statusCode !== 200) {
             callback(JSON.stringify(res.body) || res.statusCode);
@@ -72,12 +72,12 @@ TravisHttp.prototype.put = function (path, json, callback) {
     });
 };
 
-TravisHttp.prototype.setAccessToken = function (accessToken) {
-    this.accessToken = accessToken;
+TravisHttp.prototype._setAccessToken = function (accessToken) {
+    this._accessToken = accessToken;
 };
 
-TravisHttp.prototype.getAccessToken = function () {
-    return this.accessToken;
+TravisHttp.prototype._getAccessToken = function () {
+    return this._accessToken;
 };
 
 module.exports = TravisHttp;

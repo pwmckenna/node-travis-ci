@@ -83,7 +83,6 @@ var TRAVIS_ENDPOINT = 'https://api.travis-ci.org';
 var TRAVIS_PRO_ENDPOINT = 'https://api.travis-ci.com';
 
 var TravisClient = function (config) {
-
     TravisHttp.call(this, config.pro ? TRAVIS_PRO_ENDPOINT : TRAVIS_ENDPOINT);
 
     if (!config.hasOwnProperty('version')) {
@@ -99,16 +98,16 @@ var TravisClient = function (config) {
     });
 
     var routePathApis = _.groupBy(routes, 'path');
-    _.each(routePathApis, this.addRoute, this);
+    _.each(routePathApis, this._addRoute, this);
 };
 util.inherits(TravisClient, TravisHttp);
 
 TravisClient.prototype.authenticate = function (token, callback) {
     assert(!this._authenticating, 'cannot authenticate until previous authentication has completed');
     this._authenticating = true;
-    this.setAccessToken(token);
+    this._setAccessToken(token);
 
-    this.get('/users', function (err) {
+    this._get('/users', function (err) {
         this._authenticating = false;
         this._authenticated = !err;
         callback(err);
@@ -119,7 +118,7 @@ TravisClient.prototype.isAuthenticated = function () {
     return this._authenticated || false;
 };
 
-TravisClient.prototype.addRoute = function (routes) {
+TravisClient.prototype._addRoute = function (routes) {
     var path = routes[0].path;
 
     var functionName = _.last(path);
@@ -173,13 +172,13 @@ TravisClient.prototype.addRoute = function (routes) {
 
             switch (route.verb) {
             case 'GET':
-                this.get(url, args, callback);
+                this._get(url, args, callback);
                 break;
             case 'POST':
-                this.post(url, args, callback);
+                this._post(url, args, callback);
                 break;
             case 'PUT':
-                this.put(url, args, callback);
+                this._put(url, args, callback);
                 break;
             default:
                 throw new Error('unsupported http verb');

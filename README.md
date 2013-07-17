@@ -20,6 +20,7 @@ var travis = new Travis({
 
 ### Authentication
 
+Many functions, such as [`travis.accounts`](https://api.travis-ci.org/docs/#Accounts), require authenticating as a user. 
 Currently the only way to authenticate is to start with a github oauth token, request a travis access token, and authenticate with that.
 
 ```js
@@ -36,6 +37,8 @@ travis.auth.github({
 ```
 
 ### [Accounts](https://api.travis-ci.org/docs/#Accounts)
+
+Accounts calls require [authentication](#Authentication).
 
 ```js
 travis.accounts(function (err, res) {
@@ -75,6 +78,17 @@ Endpoints that exist, but are intended for brower flows:
 - [travis.auth.post_message](https://api.travis-ci.org/docs/#/auth/post_message)
 - [travis.auth.post_message.iframe](https://api.travis-ci.org/docs/#/auth/post_message/iframe)
 
+### [Branches](https://api.travis-ci.org/docs/#Branches)
+
+```js
+travis.branches(function (err, res) {
+    // res => {
+    //     branches: [],
+    //     commits: []
+    // }
+})
+```
+
 ### [Broadcasts](https://api.travis-ci.org/docs/#Broadcasts)
 
 ```js
@@ -85,9 +99,101 @@ travis.broadcasts(function (err, res) {
 })
 ```
 
+### [Builds](https://api.travis-ci.org/docs/#Builds)
+
+```js
+travis.builds(function (err, res) {
+    // res => {
+    //     builds: [],
+    //     commits: []
+    // }
+})
+```
+
+### [Documentation](https://api.travis-ci.org/docs/#Documentation)
+
+```js
+travis.documentation(function (err, res) {
+    // res => <html>
+    //     ...
+    // </html
+})
+```
+
 ### [Endpoints](https://api.travis-ci.org/docs/#Endpoints)
 
 ```js
+travis.endpoints(function (err, res) {
+    // res => [
+    //     {
+    //         name: 'Home',
+    //         prefix: '/',
+    //         ...
+    //     },
+    //     ...
+    // ]
+});
+
+travis.endpoints({
+    prefix: 'endpoints'
+}, function (err, res) {
+    // res => {
+    //     name: 'Endpoints',
+    //     prefix: '/endpoints',
+    //     ...
+    // }
+});
+```
+
+### [Hooks](https://api.travis-ci.org/docs/#Hooks)
+
+All hook calls require [authentication](#Authentication).
+
+```js
+travis.hooks(function (err, res) {
+    // res => [
+    //     {
+    //         id: 1095505,
+    //         name: 'node-travis-ci',
+    //         owner_name: 'pwmckenna',
+    //         description: 'node library to access the Travis-CI API',
+    //         active: true,
+    //         private: false,
+    //         admin: true
+    //     }
+    //     ...
+    // ]
+});
+
+travis.hooks({
+    id: 1095505,
+    active: false
+}, function (err, res) {
+});
+```
+
+### [Jobs](https://api.travis-ci.org/docs/#Jobs)
+
+```js
+travis.jobs(function (err, res) {
+    
+});
+
+travis.jobs.log({
+    job_id: JOB_ID
+}, function (err, res) {
+    
+})
+```
+
+### [Logs](https://api.travis-ci.org/docs/#Logs)
+
+```js
+travis.logs({
+    id: LOG_ID
+}, function (err, res) {
+    
+});
 ```
 
 ### [Repos](https://api.travis-ci.org/docs/#Repos)
@@ -148,54 +254,36 @@ travis.repos.builds({
 });
 ```
 
-### [Hooks](https://api.travis-ci.org/docs/#Hooks)
+### [Requests](https://api.travis-ci.org/docs/#Requests)
 
-All hook calls require [authentication](#Authentication).
+Requests calls require [authentication](#Authentication).
 
 ```js
-travis.hooks(function (err, res) {
-    // res => [
-    //     {
-    //         id: 1095505,
-    //         name: 'node-travis-ci',
-    //         owner_name: 'pwmckenna',
-    //         description: 'node library to access the Travis-CI API',
-    //         active: true,
-    //         private: false,
-    //         admin: true
+travis.users({
+    build_id: BUILD_ID    
+}, function (err, res) {
+});
+```
+
+### [Stats](https://api.travis-ci.org/docs/#Stats)
+
+```js
+travis.stats.repos(function (err, res) {
+    // res => {
+    //     stats: {
+    //         params:
+    //         current_user:
     //     }
-    //     ...
-    // ]
+    // }
 });
 
-travis.hooks({
-    id: 1095505,
-    active: false
-}, function (err, res) {
-});
-```
-
-### [Jobs](https://api.travis-ci.org/docs/#Jobs)
-
-```js
-travis.jobs(function (err, res) {
-    
-});
-
-travis.jobs.log({
-    job_id: JOB_ID
-}, function (err, res) {
-    
-})
-```
-
-### [Logs](https://api.travis-ci.org/docs/#Logs)
-
-```js
-travis.logs({
-    id: LOG_ID
-}, function (err, res) {
-    
+travis.stats.tests(function (err, res) {
+    // res => {
+    //     stats: {
+    //         params:
+    //         current_user:
+    //     }
+    // }
 });
 ```
 
@@ -215,4 +303,14 @@ travis.users(function (err, res) {
 
 travis.users.permissions(function (err, res) {});
 travis.users.sync(function (err, res) {});
+```
+
+### [Workers](https://api.travis-ci.org/docs/#Workers)
+
+```js
+travis.workers(function (err, res) {
+    // res => {
+    //     workers: []
+    // }
+});
 ```

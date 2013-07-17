@@ -1,6 +1,7 @@
 'use strict';
 
 var TravisCi = require('..');
+var assert = require('assert');
 require('should');
 
 describe('travis ci workers api test suite', function () {

@@ -9,7 +9,7 @@ var travis = new TravisCi({
 });
 
 describe('travis ci endpoints api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
     it('exposes endpoints', function () {
         travis.endpoints.should.be.a('function');
     });

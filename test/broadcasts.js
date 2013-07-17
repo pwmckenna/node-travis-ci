@@ -5,7 +5,7 @@ require('should');
 var assert = require('assert');
 
 describe('travis ci broadcasts api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
 
     before(function (done) {
         this.publicTravis = new TravisCi({

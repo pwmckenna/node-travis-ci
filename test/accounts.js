@@ -6,7 +6,7 @@ var _ = require('lodash');
 var assert = require('assert');
 
 describe('travis ci accounts api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
 
     before(function (done) {
         this.publicTravis = new TravisCi({

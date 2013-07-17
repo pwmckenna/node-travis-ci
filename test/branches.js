@@ -9,7 +9,7 @@ var travis = new TravisCi({
 });
 
 describe('travis ci branches api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
     it('exposes branches', function () {
         travis.branches.should.be.a('function');
     });

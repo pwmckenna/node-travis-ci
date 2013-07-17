@@ -5,7 +5,7 @@ var assert = require('assert');
 require('should');
 
 describe('travis ci stats api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
 
     before(function () {
         this.travis = new TravisCi({

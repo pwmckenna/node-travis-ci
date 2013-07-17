@@ -4,7 +4,7 @@ var TravisCi = require('..');
 require('should');
 
 describe('travis ci authorization api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
 
     it('exposes auth.github', function () {
         var travis = new TravisCi({

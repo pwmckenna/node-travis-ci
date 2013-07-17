@@ -4,7 +4,7 @@ var TravisCi = require('..');
 require('should');
 
 describe('travis ci pro repos api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
 
     before(function (done) {
         this.publicTravis = new TravisCi({

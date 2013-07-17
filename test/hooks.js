@@ -5,7 +5,7 @@ require('should');
 var _ = require('lodash');
 
 describe('travis ci hooks api test suite', function () {
-    this.timeout(10000);
+    this.timeout(30000);
 
     before(function (done) {
         this.publicTravis = new TravisCi({

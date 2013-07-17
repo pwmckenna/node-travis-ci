@@ -18,7 +18,7 @@ var travis = new Travis({
 });
 ```
 
-### [Authorization](https://api.travis-ci.org/docs/#Authorization)
+### Authentication
 
 Currently the only way to authenticate is to start with a github oauth token, request a travis access token, and authenticate with that.
 
@@ -54,6 +54,27 @@ travis.accounts(function (err, res) {
 })
 ```
 
+### [Authorization](https://api.travis-ci.org/docs/#Authorization)
+
+```js
+travis.auth.github({
+    github_token: GITHUB_OAUTH_TOKEN
+}, function (err, res) {
+    // res => {
+    //     access_token: XXXXXXX
+    // }
+});
+```
+
+Additional endpoints that have not be implemented yet:
+- [travis.auth.authorize](https://api.travis-ci.org/docs/#/auth/authorize)
+- [travis.auth.access_token](https://api.travis-ci.org/docs/#POST /auth/access_token)
+
+Endpoints that exist, but are intended for brower flows:
+- [travis.auth.handshake](https://api.travis-ci.org/docs/#/auth/handshake)
+- [travis.auth.post_message](https://api.travis-ci.org/docs/#/auth/post_message)
+- [travis.auth.post_message.iframe](https://api.travis-ci.org/docs/#/auth/post_message/iframe)
+
 ### [Broadcasts](https://api.travis-ci.org/docs/#Broadcasts)
 
 ```js
@@ -62,6 +83,11 @@ travis.broadcasts(function (err, res) {
     //     broadcasts: []
     // }
 })
+```
+
+### [Endpoints](https://api.travis-ci.org/docs/#Endpoints)
+
+```js
 ```
 
 ### [Repos](https://api.travis-ci.org/docs/#Repos)

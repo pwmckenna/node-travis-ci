@@ -23,8 +23,8 @@ describe('travis ci workers api test suite', function () {
                 return done(new Error(err));
             }
 
-            assert(res.hasOwnProperties('builds'));
-            assert(res.hasOwnProperties('commits'));
+            assert(res.hasOwnProperty('builds'));
+            assert(res.hasOwnProperty('commits'));
 
             done();
         });

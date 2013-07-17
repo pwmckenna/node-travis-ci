@@ -51,13 +51,13 @@ describe('travis ci hooks api test suite', function () {
 
             var hooks = res.hooks;
 
-            var hook = _.findWhere(hooks, { id: 1095505,
-               name: 'node-travis-ci',
-               owner_name: 'pwmckenna',
-               description: 'node library to access the Travis-CI API',
-               active: true,
-               private: false,
-               admin: true
+            var hook = _.findWhere(hooks, {
+                name: 'node-travis-ci',
+                owner_name: 'pwmckenna',
+                description: 'node library to access the Travis-CI API',
+                active: true,
+                private: false,
+                admin: true
             });
 
             if (!hook) {

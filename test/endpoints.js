@@ -1,11 +1,5 @@
 'use strict';
 
-// var assert = require('assert');
-// var fs = require('fs');
-// var request = require('supertest');
-// var server = require('../server');
-
-
 var TravisCi = require('..');
 var _ = require('lodash');
 require('should');
@@ -14,7 +8,7 @@ var travis = new TravisCi({
     version: '2.0.0'
 });
 
-describe('travis ci authorization api test suite', function () {
+describe('travis ci endpoints api test suite', function () {
     this.timeout(10000);
     it('exposes endpoints', function () {
         travis.endpoints.should.be.a('function');

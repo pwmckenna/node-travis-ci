@@ -1,11 +1,5 @@
 'use strict';
 
-// var assert = require('assert');
-// var fs = require('fs');
-// var request = require('supertest');
-// var server = require('../server');
-
-
 var TravisCi = require('..');
 var _ = require('lodash');
 var assert = require('assert');
@@ -115,7 +109,7 @@ describe('travis ci repos api test suite', function () {
             name: 'node-travis-ci'
         }, function (err, res) {
             if (err) { return done(new Error(err)); }
-            
+
             assert(res.hasOwnProperty('builds'));
             assert(res.hasOwnProperty('commits'));
 

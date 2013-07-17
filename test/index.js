@@ -1,11 +1,5 @@
 'use strict';
 
-// var assert = require('assert');
-// var fs = require('fs');
-// var request = require('supertest');
-// var server = require('../server');
-
-
 var TravisCi = require('..');
 require('should');
 

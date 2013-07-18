@@ -26,17 +26,21 @@ var getRouteApiPath = function (route) {
 
 var getRouteApiArguments = function (route) {
     var segments = _s.words(_s.trim(route.uri, '/'), '/');
-    return _.map(_.filter(segments, function (segment) {
+    return _.map(_.map(_.filter(segments, function (segment) {
         return segment[0] === ':';
     }), function (argument) {
+        // strip off the : that denotes an argument name
         return argument.substr(1);
+    }), function (arg) {
+        // strip off the optional ? after the argument name
+        return (arg.substr(-1) === '?') ? arg.substr(0, arg.length -1) : arg;
     });
 };
 
 var fillRouteArguments = function (route, args) {
     var filledRoute = route.uri;
     _.each(route.args, function (arg) {
-        filledRoute = filledRoute.replace(':' + arg, args[arg]);
+        filledRoute = filledRoute.replace(new RegExp(':' + arg + '\\??'), args[arg]);
     });
     return filledRoute;
 };

@@ -167,7 +167,9 @@ travis.hooks(function (err, res) {
 
 travis.hooks({
     id: 1095505,
-    active: false
+    hook: {
+        active: false
+    }
 }, function (err, res) {
 });
 ```

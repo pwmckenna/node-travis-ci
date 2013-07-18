@@ -18,13 +18,11 @@ describe('travis ci workers api test suite', function () {
     });
 
     it('successfully calls workers', function (done) {
-        this.travis.builds(function (err, res) {
+        this.travis.workers(function (err, res) {
             if (err) {
                 return done(new Error(err));
             }
-
-            assert(res.hasOwnProperty('builds'));
-            assert(res.hasOwnProperty('commits'));
+            assert(res.hasOwnProperty('workers'));
 
             done();
         });

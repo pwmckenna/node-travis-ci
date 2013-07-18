@@ -67,4 +67,83 @@ describe('travis ci hooks api test suite', function () {
             done();
         });
     });
+
+    it('toggles the hook active property', function (done) {
+        this.privateTravis.hooks({}, function (err, res) {
+            if (err) { return done(new Error(err)); }
+
+            var hooks = res.hooks;
+
+            var hook = _.findWhere(hooks, {
+                name: 'node-travis-ci',
+                owner_name: 'pwmckenna',
+                description: 'node library to access the Travis-CI API',
+                active: true,
+                private: false,
+                admin: true
+            });
+
+            if (!hook) {
+                return done(new Error('hooks did not contain expected hook for node-travis-ci'));
+            }
+
+            this.privateTravis.hooks({
+                id: hook.id,
+                hook: {
+                    active: false
+                }
+            }, function (err) {
+                if (err) { return done(new Error(err)); }
+
+                this.privateTravis.hooks(function (err, res) {
+                    if (err) { return done(new Error(err)); }
+
+                    var hooks = res.hooks;
+
+                    var hook = _.findWhere(hooks, {
+                        name: 'node-travis-ci',
+                        owner_name: 'pwmckenna',
+                        description: 'node library to access the Travis-CI API',
+                        active: false,
+                        private: false,
+                        admin: true
+                    });
+
+                    if (!hook) {
+                        return done(new Error('hooks did not contain expected hook for node-travis-ci'));
+                    }
+
+                    this.privateTravis.hooks({
+                        id: hook.id,
+                        hook: {
+                            active: true
+                        }
+                    }, function (err) {
+                        if (err) { return done(new Error(err)); }
+
+                        this.privateTravis.hooks(function (err, res) {
+                            if (err) { return done(new Error(err)); }
+
+                            var hooks = res.hooks;
+
+                            var hook = _.findWhere(hooks, {
+                                name: 'node-travis-ci',
+                                owner_name: 'pwmckenna',
+                                description: 'node library to access the Travis-CI API',
+                                active: true,
+                                private: false,
+                                admin: true
+                            });
+
+                            if (!hook) {
+                                return done(new Error('hooks did not contain expected hook for node-travis-ci'));
+                            }
+
+                            done();
+                        });
+                    }.bind(this));
+                }.bind(this));
+            }.bind(this));
+        }.bind(this));
+    });
 });

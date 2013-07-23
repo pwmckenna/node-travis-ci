@@ -70,13 +70,13 @@ travis.auth.github({
 ```
 
 Additional endpoints that have not be implemented yet:
-- [travis.auth.authorize](https://api.travis-ci.org/docs/#/auth/authorize)
-- [travis.auth.access_token](https://api.travis-ci.org/docs/#POST /auth/access_token)
+* [travis.auth.authorize](https://api.travis-ci.org/docs/#/auth/authorize)
+* [travis.auth.access_token](https://api.travis-ci.org/docs/#POST /auth/access_token)
 
 Endpoints that exist, but are intended for brower flows:
-- [travis.auth.handshake](https://api.travis-ci.org/docs/#/auth/handshake)
-- [travis.auth.post_message](https://api.travis-ci.org/docs/#/auth/post_message)
-- [travis.auth.post_message.iframe](https://api.travis-ci.org/docs/#/auth/post_message/iframe)
+* [travis.auth.handshake](https://api.travis-ci.org/docs/#/auth/handshake)
+* [travis.auth.post_message](https://api.travis-ci.org/docs/#/auth/post_message)
+* [travis.auth.post_message.iframe](https://api.travis-ci.org/docs/#/auth/post_message/iframe)
 
 ### [Branches](https://api.travis-ci.org/docs/#Branches)
 

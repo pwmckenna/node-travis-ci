@@ -1,6 +1,6 @@
 {
   "name": "travis-ci",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "node library to access the Travis-CI API",
   "main": "lib/index",
   "repository": {

@@ -1,7 +1,7 @@
 'use strict';
 
 var TravisCi = require('..');
-var _ = require('lodash');
+// var _ = require('lodash');
 var assert = require('assert');
 require('should');
 
@@ -18,35 +18,23 @@ describe('travis ci logs api test suite', function () {
         this.travis.logs.should.be.a('function');
     });
 
-    it('successfully get log for random job', function (done) {
-        this.travis.jobs(function (err, res) {
+    it.only('successfully get log for random job', function (done) {
+        this.travis.logs({
+            id: 3986694
+        }, function (err, res) {
             if (err) {
                 return done(new Error(err));
             }
 
-            assert(res.hasOwnProperty('jobs'));
-            assert(_.isArray(res.jobs));
-
-            var job = res.jobs[0];
-            assert(job.hasOwnProperty('log_id'));
-
-            this.travis.logs({
-                id: job.log_id
-            }, function (err, res) {
-                if (err) {
-                    return done(new Error(err));
-                }
-
-                assert(res.hasOwnProperty('log'));
-                var log = res.log;
-                assert(log.hasOwnProperty('id'));
-                assert(log.id === job.log_id);
-                assert(log.job_id === job.id);
-                assert(log.type === 'Log');
-                assert(log.hasOwnProperty('body'));
-
-                done();
-            });
+            assert(res.hasOwnProperty('log'));
+            assert(res.log.hasOwnProperty('id'));
+            assert(res.log.id === 3986694);
+            assert(res.log.hasOwnProperty('job_id'));
+            assert(res.log.job_id === 9624444);
+            assert(res.log.hasOwnProperty('type'));
+            assert(res.log.type === 'Log');
+            assert(res.log.hasOwnProperty('body'));
+            done();
         }.bind(this));
     });
 });

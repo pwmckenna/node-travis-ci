@@ -1,16 +1,26 @@
 #!/usr/bin/env node
 
 'use strict';
-
+var _ = require('lodash');
+var Travis = require('../lib/travis-ci');
 var domain = require('domain').create();
+
+var coerseType = function (arg) {
+    var num = parseInt(arg, 10);
+    var ret;
+    if (_.isNaN(num)) {
+        ret = arg;
+    } else {
+        ret = num;
+    }
+    return ret;
+};
+
 domain.on('error', function (err) {
     console.log(err.message);
 });
 
 domain.run(function () {
-    var _ = require('lodash');
-    var Travis = require('../lib/travis-ci');
-
     // Strip off node and the file path to this file.
     var argv = _.rest(process.argv, 2);
     // Check if we should make calls to the pro server.
@@ -24,7 +34,8 @@ domain.run(function () {
     var args = _(argv).select(function (arg) {
         return arg.indexOf('--') === 0;
     }).without('--pro').map(function (arg) {
-        return arg.substr(2).split('=');
+        var split = arg.substr(2).split('=');
+        return [split[0], coerseType(split[1])];
     }).object().value();
 
     var func = new Travis({

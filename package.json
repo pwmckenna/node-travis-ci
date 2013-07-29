@@ -2,7 +2,10 @@
   "name": "travis-ci",
   "version": "0.1.4",
   "description": "node library to access the Travis-CI API",
-  "main": "lib/index",
+  "main": "lib/travis-ci",
+  "bin": {
+    "travis-ci": "./bin/travis-ci.js"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/pwmckenna/node-travis-ci.git"
@@ -24,8 +27,7 @@
   "dependencies": {
     "lodash": "~1.3.1",
     "request": "~2.22.0",
-    "underscore.string": "~2.2.0rc",
-    "github": "~0.1.10"
+    "underscore.string": "~2.2.0rc"
   },
   "devDependencies": {
     "grunt-env": "~0.4.0",

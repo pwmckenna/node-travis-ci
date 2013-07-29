@@ -36,6 +36,8 @@ travis.auth.github({
 });
 ```
 
+Authentication is simply a helper function that appends your `access_token` to all requests. You can alternatively pass `access_token` to any request where permission is required.
+
 ### [Accounts](https://api.travis-ci.org/docs/#Accounts)
 
 Accounts calls require [authentication](#Authentication).
@@ -263,7 +265,7 @@ travis.repos.builds({
 Requests calls require [authentication](#Authentication).
 
 ```js
-travis.users({
+travis.requests({
     build_id: BUILD_ID    
 }, function (err, res) {
 });

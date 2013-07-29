@@ -36,7 +36,7 @@ travis.auth.github({
 });
 ```
 
-Authentication is simply a helper function that appends your `access_token` to all requests. You can alternatively pass `access_token` to any request where permission is required.
+Authentication is simply a convenience function that appends your `access_token` to all subsequent requests. You can alternatively pass `access_token` to any request where permission is required.
 
 ### [Accounts](https://api.travis-ci.org/docs/#Accounts)
 

@@ -15,7 +15,9 @@ describe('travis ci builds api test suite', function () {
     });
 
     it('successfully calls builds', function (done) {
-        travis.builds(function (err, res) {
+        travis.builds({
+            build_id: 2689711
+        }, function (err, res) {
             if (err) {
                 return done(new Error(err));
             }

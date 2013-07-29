@@ -7,9 +7,8 @@ module.exports = function (grunt) {
         jshint: {
             all: {
                 src: [
-                    'api/**/*.js',
-                    'test/**/*.js',
-                    '*.js'
+                    '**/*.js',
+                    '!node_modules/**/*.js'
                 ],
                 options: {
                     jshintrc: '.jshintrc'

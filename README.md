@@ -375,11 +375,19 @@ npm install -g travis-ci
 The entire library is available via command line interface. While it uses subcommands, the api is the same as above.
 
 ```bash
+travis-ci authenticate --username=pwmckenna --password=superSecret
+=>  {
+        "access_token": "F7DlolJkD15isf4KEDuh_A"
+    }
+# or
 travis-ci auth github --github_token=ef7c329fb63479eb5be9719bb8b23162072bb20d
 =>  {
         "access_token": "F7DlolJkD15isf4KEDuh_A"
     }
 ```
+
+> __Pro Tip:__ Passing OAuth tokens or github credentials via the command line will leave them in your shell history for all to see. Keep that in mind.
+
 
 Use the `access_token` above in all subsequent commands that require authentication, such as requesting the builds for this project:
 

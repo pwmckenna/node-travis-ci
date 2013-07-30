@@ -386,7 +386,7 @@ travis-ci auth github --github_token=ef7c329fb63479eb5be9719bb8b23162072bb20d
     }
 ```
 
-> __Pro Tip:__ Passing OAuth tokens or github credentials via the command line will leave them in your shell history for all to see. Keep that in mind.
+> __Pro Tip:__ Passing OAuth tokens or github credentials via the command line will leave them in your shell history for all to see. Please shell responsibly.
 
 
 Use the `access_token` above in all subsequent commands that require authentication, such as requesting the builds for this project:

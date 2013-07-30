@@ -38,9 +38,28 @@ travis.auth.github({
     // res => {
     //     access_token: XXXXXXX
     // }
-    travis.authenticate(res.access_token, function (err) {
+    travis.authenticate({
+        access_token: res.access_token
+    }, function (err) {
          // we've authenticated!
     });
+});
+```
+
+As a convenience, `authenticate` also accepts github tokens, or github credentials (which are only sent to github) and performs the necessary requests to aquire a travis access token. For example:
+
+```js
+travis.authenticate({
+    github_token: GITHUB_OAUTH_TOKEN
+}, function (err) {
+    // we've authenticated! 
+});
+//or
+travis.authenticate({
+    username: GITHUB_USERNAME,
+    password: GITHUB_PASSWORD
+}, function (err) {
+    //we've authenticated!
 });
 ```
 

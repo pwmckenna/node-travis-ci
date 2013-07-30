@@ -18,7 +18,7 @@ describe('travis ci logs api test suite', function () {
         this.travis.logs.should.be.a('function');
     });
 
-    it.only('successfully get log for random job', function (done) {
+    it('successfully get log for random job', function (done) {
         this.travis.logs({
             id: 3986694
         }, function (err, res) {

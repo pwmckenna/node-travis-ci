@@ -20,10 +20,11 @@ describe('travis ci accounts api test suite', function () {
         }, function (err, res) {
             if (err) { return done(new Error(err)); }
 
-            var token = res.access_token;
-
-            this.privateTravis.authenticate(token, function (err) {
+            this.privateTravis.authenticate({
+                access_token: res.access_token
+            }, function (err) {
                 if (err) { return done(new Error(err)); }
+
                 done();
             });
         }.bind(this));

@@ -19,7 +19,9 @@ describe('travis ci requests api test suite', function () {
 
             var token = res.access_token;
 
-            this.travis.authenticate(token, function (err) {
+            this.travis.authenticate({
+                access_token: token
+            }, function (err) {
                 if (err) { return done(new Error(err)); }
                 done();
             });

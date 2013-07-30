@@ -22,7 +22,9 @@ describe('travis ci pro repos api test suite', function () {
 
             var token = res.access_token;
 
-            this.privateTravis.authenticate(token, function (err) {
+            this.privateTravis.authenticate({
+                access_token: token
+            }, function (err) {
                 if (err) { return done(new Error(err)); }
                 done();
             });

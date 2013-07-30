@@ -1,4 +1,4 @@
-node-travis-ci
+node-travis-ci [![Build Status](https://travis-ci.org/pwmckenna/node-travis-ci.png?branch=master)](https://travis-ci.org/pwmckenna/node-travis-ci)
 ==============
 
 node library to access the [Travis-CI API](https://api.travis-ci.org/docs/)
@@ -14,7 +14,14 @@ npm install --save travis-ci
 ```js
 var Travis = require('travis-ci');
 var travis = new Travis({
-  version: '2.0.0'
+    version: '2.0.0'
+});
+
+// To use Travis-CI Pro
+
+var travis = new Travis({
+    version: '2.0.0',
+    pro: true
 });
 ```
 
@@ -181,7 +188,9 @@ travis.hooks({
 ### [Jobs](https://api.travis-ci.org/docs/#Jobs)
 
 ```js
-travis.jobs(function (err, res) {
+travis.jobs({
+    id: JOB_ID
+}, function (err, res) {
     
 });
 

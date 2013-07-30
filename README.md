@@ -3,13 +3,13 @@ node-travis-ci [![Build Status](https://travis-ci.org/pwmckenna/node-travis-ci.p
 
 node library to access the [Travis-CI API](https://api.travis-ci.org/docs/)
 
-## [Installation](https://npmjs.org/package/travis-ci)
+# [Installation](https://npmjs.org/package/travis-ci)
 
 ```bs
 npm install --save travis-ci
 ```
 
-## Instantiation
+# Instantiation
 
 ```js
 var Travis = require('travis-ci');
@@ -17,15 +17,14 @@ var travis = new Travis({
     version: '2.0.0'
 });
 
-// To use Travis-CI Pro
-
+// To access the Travis-CI Pro API
 var travis = new Travis({
     version: '2.0.0',
     pro: true
 });
 ```
 
-## API
+# API
 
 ### Authentication
 

@@ -45,8 +45,8 @@ describe('travis ci jobs api test suite', function () {
                         'global_env': 'GITHUB_OAUTH_TOKEN=[secure]'
                     },
                     'state': 'failed',
-                    'started_at': '2013-07-29T23:28:52Z',
-                    'finished_at': '2013-07-29T23:31:44Z',
+                    'started_at': '2013-07-29T23:49:43Z',
+                    'finished_at': '2013-07-29T23:51:42Z',
                     'queue': 'builds.linux',
                     'allow_failure': false,
                     'tags': ''

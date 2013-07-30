@@ -385,16 +385,16 @@ Use the `access_token` above in all subsequent commands that require authenticat
 
 ```bash
 travis-ci repos builds --owner_name=pwmckenna --name=node-travis-ci --access_token=F7DlolJkD15isf4KEDuh_A
-=> {
-    "builds": [
-        {
-            "id": 9630304,
-            "repository_id": 1095505,
-            "pull_request": false,
-            "state": "passed",
+=>  {
+        "builds": [
+            {
+                "id": 9630304,
+                "repository_id": 1095505,
+                "pull_request": false,
+                "state": "passed",
+                ...
+            },
             ...
-        },
-        ...
-    ]
-}
+        ]
+    }
 ```

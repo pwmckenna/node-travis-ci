@@ -3,13 +3,13 @@ node-travis-ci [![Build Status](https://travis-ci.org/pwmckenna/node-travis-ci.p
 
 node library to access the [Travis-CI API](https://api.travis-ci.org/docs/)
 
-### [Installation](https://npmjs.org/package/travis-ci)
+## [Installation](https://npmjs.org/package/travis-ci)
 
 ```bs
 npm install --save travis-ci
 ```
 
-### Instantiation
+## Instantiation
 
 ```js
 var Travis = require('travis-ci');
@@ -24,6 +24,8 @@ var travis = new Travis({
     pro: true
 });
 ```
+
+## API
 
 ### Authentication
 
@@ -43,7 +45,7 @@ travis.auth.github({
 });
 ```
 
-Authentication is simply a convenience function that appends your `access_token` to all subsequent requests. You can alternatively pass `access_token` to any request where permission is required.
+> __Pro Tip:__ Authentication is simply a convenience function that ensures your token has the required permissions, then appends your `access_token` to all subsequent requests. You can alternatively pass `access_token` to any request where permission is required.
 
 ### [Accounts](https://api.travis-ci.org/docs/#Accounts)
 
@@ -191,7 +193,25 @@ travis.hooks({
 travis.jobs({
     id: JOB_ID
 }, function (err, res) {
-    
+    // res => {
+    //     "job": {
+    //         "id": 9624444,
+    //         "repository_id": 1095505,
+    //         "repository_slug": "pwmckenna/node-travis-ci",
+    //         "build_id": 9624443,
+    //         "commit_id": 2836527,
+    //         "log_id": 3986694,
+    //         "state": "failed",
+    //         ...
+    //     },
+    //     "commit": {
+    //         "id": 2836527,
+    //         "sha": "431d6e5d899f165e4786ce82c4672975cddca670",
+    //         "branch": "master",
+    //         "message": "fixing builds test",
+    //         ...
+    //     }
+    // }
 });
 
 travis.jobs.log({
@@ -207,7 +227,14 @@ travis.jobs.log({
 travis.logs({
     id: LOG_ID
 }, function (err, res) {
-    
+    // res => {
+    //     log: {
+    //         id: 3986694,
+    //         job_id: 9624444,
+    //         type: 'Log',
+    //         body: 'Using worker: worker-linux-6-2.bb.travis-ci.org:travis-linux-15\n\n$ export GITHUB_OAUTH_TOKEN=[secure]...
+    //     }
+    // }
 });
 ```
 
@@ -277,6 +304,14 @@ Requests calls require [authentication](#Authentication).
 travis.requests({
     build_id: BUILD_ID    
 }, function (err, res) {
+    // res => {
+    //     "result": true,
+    //     "flash": [
+    //         {
+    //             "notice": "The build was successfully restarted."
+    //         }
+    //     ]
+    // }
 });
 ```
 

@@ -336,7 +336,7 @@ travis.stats.tests(function (err, res) {
 });
 ```
 
-### [Users](https://api.travis-ci.org/docs/#Users)
+### [Users](https://api.travis-ci.org/docs/#ss)
 
 All user calls require [authentication](#Authentication).
 
@@ -362,4 +362,27 @@ travis.workers(function (err, res) {
     //     workers: []
     // }
 });
+```
+
+# CLI
+
+To install as a command line utility, just install globally via npm.
+
+```
+npm install -g travis-ci
+```
+
+The entire library is available via command line interface. While it uses subcommands, the api is the same as above.
+
+```
+travis-ci auth github --github_token=ef7c329fb63479eb5be9719bb8b23162072bb20d
+=>  {
+        access_token: F7DlolJkD15isf4KEDuh_A
+    }
+```
+
+Use that access token in all subsequent commands, such as requesting the builds for this project:
+
+```
+travis-ci repos builds --owner_name=pwmckenna --name=node-travis-ci --access_token=F7DlolJkD15isf4KEDuh_A
 ```

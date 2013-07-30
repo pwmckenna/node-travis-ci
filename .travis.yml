@@ -1,4 +1,3 @@
----
 language: node_js
 node_js:
 - 0.10.1
@@ -6,7 +5,9 @@ script:
 - ./node_modules/grunt-cli/bin/grunt test
 env:
   global:
-    secure: |-
+  - secure: |-
       SHezJGUSi1cc/V+AWBgmGe/SL1zPO4LC9baMGWyQJJetOexBJM/zIMR3J8Ci
       BJTr9VCK9CpBk00P+fAlXzPseQJtNjXNJjHsuN+3x/IHAhK2gn1gLwqvhIEI
       arzSh1mi64cfJP5kuJOGcJzjBwk6rI2ZNsiWxHYtAZA2g3R45eY=
+  - secure: opq2IxY6TquOtn4nCI75YJZHkDB684kQC/dfdkHW3OO4+1l7wCWhQSYhCOfEDnByJzkPf1EdzWRWm9L4atslVqvkpKeq36Y2GG4ORuLEXltr8BVzTof2tzKUdL9HX7ptybFdVHSNIG3E+3R4cpsUyIeH34hQowwH+ujrZM9chMI=
+  - secure: f4rapdrgZJIeqUUBu3Bp/zrBvMcbNoHCbrJTSjbMKS/svvA8AO80uOHMeohadXrRFBTxGcxARBXJ+dM3XSapXKtyPktvHCw9wcfAtFfwbt6INDVIDArxNcseTAj0NivXZskBMb40DwjPpo5FMFHZUNyr3I1jtB98TEuyd9mfcOI=

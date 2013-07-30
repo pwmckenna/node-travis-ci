@@ -1,22 +1,30 @@
-node-travis-ci
+node-travis-ci [![Build Status](https://travis-ci.org/pwmckenna/node-travis-ci.png?branch=master)](https://travis-ci.org/pwmckenna/node-travis-ci)
 ==============
 
 node library to access the [Travis-CI API](https://api.travis-ci.org/docs/)
 
-### [Installation](https://npmjs.org/package/travis-ci)
+# [Installation](https://npmjs.org/package/travis-ci)
 
-```bs
+```bash
 npm install --save travis-ci
 ```
 
-### Instantiation
+# Instantiation
 
 ```js
 var Travis = require('travis-ci');
 var travis = new Travis({
-  version: '2.0.0'
+    version: '2.0.0'
+});
+
+// To access the Travis-CI Pro API
+var travis = new Travis({
+    version: '2.0.0',
+    pro: true
 });
 ```
+
+# API
 
 ### Authentication
 
@@ -36,7 +44,7 @@ travis.auth.github({
 });
 ```
 
-Authentication is simply a convenience function that appends your `access_token` to all subsequent requests. You can alternatively pass `access_token` to any request where permission is required.
+> __Pro Tip:__ Authentication is simply a convenience function that ensures your token has the required permissions, then appends your `access_token` to all subsequent requests. You can alternatively pass `access_token` to any request where permission is required.
 
 ### [Accounts](https://api.travis-ci.org/docs/#Accounts)
 
@@ -181,8 +189,28 @@ travis.hooks({
 ### [Jobs](https://api.travis-ci.org/docs/#Jobs)
 
 ```js
-travis.jobs(function (err, res) {
-    
+travis.jobs({
+    id: JOB_ID
+}, function (err, res) {
+    // res => {
+    //     "job": {
+    //         "id": 9624444,
+    //         "repository_id": 1095505,
+    //         "repository_slug": "pwmckenna/node-travis-ci",
+    //         "build_id": 9624443,
+    //         "commit_id": 2836527,
+    //         "log_id": 3986694,
+    //         "state": "failed",
+    //         ...
+    //     },
+    //     "commit": {
+    //         "id": 2836527,
+    //         "sha": "431d6e5d899f165e4786ce82c4672975cddca670",
+    //         "branch": "master",
+    //         "message": "fixing builds test",
+    //         ...
+    //     }
+    // }
 });
 
 travis.jobs.log({
@@ -198,7 +226,14 @@ travis.jobs.log({
 travis.logs({
     id: LOG_ID
 }, function (err, res) {
-    
+    // res => {
+    //     log: {
+    //         id: 3986694,
+    //         job_id: 9624444,
+    //         type: 'Log',
+    //         body: 'Using worker: worker-linux-6-2.bb.travis-ci.org:travis-linux-15\n\n$ export GITHUB_OAUTH_TOKEN=[secure]...
+    //     }
+    // }
 });
 ```
 
@@ -268,6 +303,14 @@ Requests calls require [authentication](#Authentication).
 travis.requests({
     build_id: BUILD_ID    
 }, function (err, res) {
+    // res => {
+    //     "result": true,
+    //     "flash": [
+    //         {
+    //             "notice": "The build was successfully restarted."
+    //         }
+    //     ]
+    // }
 });
 ```
 
@@ -293,7 +336,7 @@ travis.stats.tests(function (err, res) {
 });
 ```
 
-### [Users](https://api.travis-ci.org/docs/#Users)
+### [Users](https://api.travis-ci.org/docs/#ss)
 
 All user calls require [authentication](#Authentication).
 
@@ -319,4 +362,39 @@ travis.workers(function (err, res) {
     //     workers: []
     // }
 });
+```
+
+# CLI
+
+To install as a command line utility, just install globally via npm.
+
+```bash
+npm install -g travis-ci
+```
+
+The entire library is available via command line interface. While it uses subcommands, the api is the same as above.
+
+```bash
+travis-ci auth github --github_token=ef7c329fb63479eb5be9719bb8b23162072bb20d
+=>  {
+        "access_token": "F7DlolJkD15isf4KEDuh_A"
+    }
+```
+
+Use the `access_token` above in all subsequent commands that require authentication, such as requesting the builds for this project:
+
+```bash
+travis-ci repos builds --owner_name=pwmckenna --name=node-travis-ci --access_token=F7DlolJkD15isf4KEDuh_A
+=>  {
+        "builds": [
+            {
+                "id": 9630304,
+                "repository_id": 1095505,
+                "pull_request": false,
+                "state": "passed",
+                ...
+            },
+            ...
+        ]
+    }
 ```

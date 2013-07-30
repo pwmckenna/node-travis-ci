@@ -19,7 +19,6 @@ describe('travis ci accounts api test suite', function () {
             github_token: process.env.GITHUB_OAUTH_TOKEN
         }, function (err, res) {
             if (err) { return done(new Error(err)); }
-
             this.privateTravis.authenticate({
                 access_token: res.access_token
             }, function (err) {

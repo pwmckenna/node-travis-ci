@@ -38,10 +38,11 @@ domain.run(function () {
         return [split[0], coerseType(split[1])];
     }).object().value();
 
-    var func = new Travis({
+    var travis = new Travis({
         version: '2.0.0',
         pro: pro
     });
+    var func = travis;
     // Iterate until we find the right function.
     _.each(subCommands, function (subCommand) {
         func = func[subCommand];
@@ -51,7 +52,7 @@ domain.run(function () {
     });
 
     // Call the function and deliver the news.
-    func(args, function (err, res) {
+    func.call(travis, args, function (err, res) {
         if (err) {
             throw new Error(err);
         }

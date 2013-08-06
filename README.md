@@ -5,12 +5,6 @@ node library to access the [Travis-CI API](https://api.travis-ci.org/docs/)
 
 [![NPM](https://nodei.co/npm/travis-ci.png?downloads=true&stars=true)](https://npmjs.org/package/travis-ci)
 
-# [Installation](https://npmjs.org/package/travis-ci)
-
-```bash
-npm install --save travis-ci
-```
-
 # Instantiation
 
 ```js

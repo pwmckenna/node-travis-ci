@@ -118,4 +118,103 @@ describe('travis ci repos api test suite', function () {
             done();
         });
     });
+
+    it('returns repo branches by repository_id', function (done) {
+        this.publicTravis.repos.branches({
+            repository_id: PROJECT_TRAVIS_REPO_ID,
+        }, function (err, res) {
+            if (err) { return done(new Error(err)); }
+
+            assert(res.hasOwnProperty('branches'));
+            assert(res.hasOwnProperty('commits'));
+
+            // there should be a commit for master (at least..should beone for 'github' as well)
+            var masterCommit = _.findWhere(res.commits, {
+                branch: 'master',
+                author_name: 'Patrick Williams'
+            });
+            assert(masterCommit);
+
+            // there should be a "branch", with the repo id, and a commit id that matches
+            // the commit we found above
+            var masterBranch = _.findWhere(res.branches, {
+                repository_id: PROJECT_TRAVIS_REPO_ID,
+                commit_id: masterCommit.id
+            });
+            assert(masterBranch);
+
+            done();
+        });
+    });
+
+    it('returns repo branch by repository_id/branch', function (done) {
+        var BRANCH_NAME = 'master';
+
+        this.publicTravis.repos.branches({
+            repository_id: PROJECT_TRAVIS_REPO_ID,
+            branch: BRANCH_NAME
+        }, function (err, res) {
+            if (err) { return done(new Error(err)); }
+
+            assert(res.hasOwnProperty('branch'));
+            assert(res.hasOwnProperty('commit'));
+
+            assert(res.branch.repository_id === PROJECT_TRAVIS_REPO_ID);
+            assert(res.branch.commit_id === res.commit.id);
+            assert(res.commit.branch === BRANCH_NAME);
+
+            done();
+        });
+    });
+
+    it('returns repo branches by owner/name', function (done) {
+        this.publicTravis.repos.branches({
+            owner_name: 'pwmckenna',
+            name: 'node-travis-ci'
+        }, function (err, res) {
+            if (err) { return done(new Error(err)); }
+
+            assert(res.hasOwnProperty('branches'));
+            assert(res.hasOwnProperty('commits'));
+
+            // there should be a commit for master (at least..should beone for 'github' as well)
+            var masterCommit = _.findWhere(res.commits, {
+                branch: 'master',
+                author_name: 'Patrick Williams'
+            });
+            assert(masterCommit);
+
+            // there should be a "branch", with the repo id, and a commit id that matches
+            // the commit we found above
+            var masterBranch = _.findWhere(res.branches, {
+                repository_id: PROJECT_TRAVIS_REPO_ID,
+                commit_id: masterCommit.id
+            });
+            assert(masterBranch);
+
+            done();
+        });
+    });
+
+    it('returns repo branch by owner/name/branch', function (done) {
+        var BRANCH_NAME = 'master';
+
+        this.publicTravis.repos.branches({
+            owner_name: 'pwmckenna',
+            name: 'node-travis-ci',
+            branch: BRANCH_NAME
+        }, function (err, res) {
+            if (err) { return done(new Error(err)); }
+
+            assert(res.hasOwnProperty('branch'));
+            assert(res.hasOwnProperty('commit'));
+
+            assert(res.branch.repository_id === PROJECT_TRAVIS_REPO_ID);
+            assert(res.branch.commit_id === res.commit.id);
+            assert(res.commit.branch === BRANCH_NAME);
+
+            done();
+        });
+    });
+
 });

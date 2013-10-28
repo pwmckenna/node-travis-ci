@@ -135,6 +135,12 @@
                 "verb": "GET",
                 "doc": "",
                 "scope": "public"
+            },
+            {
+                "uri": "/builds/:id/cancel",
+                "verb": "POST",
+                "doc": "",
+                "scope": "public"
             }
         ]
     },
@@ -147,6 +153,19 @@
                 "uri": "/docs/",
                 "verb": "GET",
                 "doc": "HTML view for [/endpoints](#/endpoints/).",
+                "scope": "public"
+            }
+        ]
+    },
+    {
+        "name": "Endpoint",
+        "doc": "",
+        "prefix": "/endpoint",
+        "routes": [
+            {
+                "uri": "/endpoint/:id/cancel",
+                "verb": "POST",
+                "doc": "",
                 "scope": "public"
             }
         ]
@@ -237,12 +256,6 @@
                 "verb": "GET",
                 "doc": "Fetches a log by it's *id*.",
                 "scope": "public"
-            },
-            {
-                "uri": "/logs/:id",
-                "verb": "PUT",
-                "doc": "",
-                "scope": "public"
             }
         ]
     },
@@ -255,6 +268,12 @@
                 "uri": "/repos/",
                 "verb": "GET",
                 "doc": "Endpoint for getting all repositories.\n\nYou can filter the repositories by adding parameters to the request. For example, you can get all repositories\nowned by johndoe by adding `owner_name=johndoe`, or all repositories that johndoe has access to by adding\n`member=johndoe`. The parameter names correspond to the keys of the response hash.\n\n### Response\n\njson(:repositories)",
+                "scope": "public"
+            },
+            {
+                "uri": "/repos/:owner_name",
+                "verb": "GET",
+                "doc": "Retrieves repositories for a given owner.",
                 "scope": "public"
             },
             {
@@ -279,6 +298,18 @@
                 "uri": "/repos/:id/key",
                 "verb": "POST",
                 "doc": "",
+                "scope": "public"
+            },
+            {
+                "uri": "/repos/:repository_id/branches",
+                "verb": "GET",
+                "doc": "Gets list of branches",
+                "scope": "public"
+            },
+            {
+                "uri": "/repos/:repository_id/branches/:branch",
+                "verb": "GET",
+                "doc": "Gets lastest build on a branch branches",
                 "scope": "public"
             },
             {
@@ -316,6 +347,18 @@
                 "verb": "POST",
                 "doc": "",
                 "scope": "public"
+            },
+            {
+                "uri": "/repos/:owner_name/:name/branches",
+                "verb": "GET",
+                "doc": "Gets list of branches",
+                "scope": "public"
+            },
+            {
+                "uri": "/repos/:owner_name/:name/branches/:branch",
+                "verb": "GET",
+                "doc": "Gets lastest build on a branch branches",
+                "scope": "public"
             }
         ]
     },
@@ -345,6 +388,19 @@
             },
             {
                 "uri": "/stats/tests",
+                "verb": "GET",
+                "doc": "",
+                "scope": "public"
+            }
+        ]
+    },
+    {
+        "name": "Uptime",
+        "doc": "",
+        "prefix": "/uptime",
+        "routes": [
+            {
+                "uri": "/uptime/",
                 "verb": "GET",
                 "doc": "",
                 "scope": "public"

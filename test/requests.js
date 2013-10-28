@@ -43,19 +43,24 @@ describe('travis ci requests api test suite', function () {
             assert(res.hasOwnProperty('commits'));
 
             var build_id = res.builds[0].id;
-
             this.travis.requests({
                 build_id: build_id
             }, function (err, res) {
-                if (err) {
-                    return done(new Error(err));
-                }
+                if (err) { return done(new Error(err)); }
+
                 assert(res.hasOwnProperty('result'));
                 assert(res.hasOwnProperty('flash'));
                 assert(res.result === true);
 
-                done();
-            });
+                // cancel the build to keep our tests tidy
+                this.travis.builds.cancel({
+                    id: build_id
+                }, function (err) {
+                    if (err) { return done(new Error(err)); }
+
+                    done();
+                });
+            }.bind(this));
         }.bind(this));
     });
 });

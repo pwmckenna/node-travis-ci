@@ -2,6 +2,7 @@
 
 var TravisCi = require('..');
 var assert = require('assert');
+var _ = require('lodash');
 require('should');
 
 describe('travis ci requests api test suite', function () {
@@ -42,9 +43,12 @@ describe('travis ci requests api test suite', function () {
             assert(res.hasOwnProperty('builds'));
             assert(res.hasOwnProperty('commits'));
 
-            var build_id = res.builds[0].id;
+            var BUILD_ID = 10380000;
+            assert(_.findWhere(res.builds, {
+                id: BUILD_ID
+            }));
             this.travis.requests({
-                build_id: build_id
+                build_id: BUILD_ID
             }, function (err, res) {
                 if (err) { return done(new Error(err)); }
 
@@ -54,7 +58,7 @@ describe('travis ci requests api test suite', function () {
 
                 // cancel the build to keep our tests tidy
                 this.travis.builds.cancel({
-                    id: build_id
+                    id: BUILD_ID
                 }, function (err) {
                     if (err) { return done(new Error(err)); }
 

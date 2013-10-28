@@ -135,6 +135,44 @@ travis.builds(function (err, res) {
     //     commits: []
     // }
 })
+
+// to get the info for a specific build, specify the build id
+// this is data used for pages such as:
+// https://travis-ci.org/pwmckenna/node-travis-ci/builds/10380000
+travis.builds({
+    id: 10380000
+}, function (err, res) {
+    // res => {
+    //     build: {
+    //         id: 10380000,
+    //         repository_id: 1095505,
+    //         commit_id: 3053424,
+    //         state: 'canceled',
+    //         started_at: null,
+    //         finished_at: '2013-10-28T21:07:02Z',
+    //         duration: 0,
+    //         job_ids: [ 10380001 ]
+    //     },
+    //     commit: {
+    //         id: 3053424,
+    //         branch: 'master',
+    //         message: '1.0.1',
+    //         author_email: 'pwmckenna@gmail.com',
+    //         ...
+    //     },
+    //     jobs: [{
+    //         id: 10380001,
+    //         build_id: 10380000,
+    //         ...
+    //     }]
+    // }
+})
+
+// to cancel a build
+travis.builds.cancel({
+    id: 10380000
+}, function (err) {
+});
 ```
 
 ### [Documentation](https://api.travis-ci.org/docs/#Documentation)

@@ -67,19 +67,39 @@ Accounts calls require [authentication](#Authentication).
 
 ```js
 travis.accounts(function (err, res) {
-    // res => {
-    //     accounts: [
-    //         {
-    //             id: 5186,
-    //             name: 'Patrick Williams',
-    //             login: 'pwmckenna',
-    //             type: 'user',
-    //             repos_count: 37
-    //         },
-    //         ...
-    //     ]
-    // }
-})
+// {
+//     "accounts": [
+//         {
+//             "id": 5186,
+//             "name": "Patrick Williams",
+//             "login": "pwmckenna",
+//             "type": "user",
+//             "repos_count": 48
+//         },
+//         {
+//             "id": ***,
+//             "name": "BitTorrent Torque Labs",
+//             "login": "bittorrenttorque",
+//             "type": "organization",
+//             "repos_count": ***
+//         },
+//         {
+//             "id": ***,
+//             "name": null,
+//             "login": "Studyokee",
+//             "type": "organization",
+//             "repos_count": ***
+//         },
+//         {
+//             "id": ***,
+//             "name": "BitTorrent Inc.",
+//             "login": "bittorrent",
+//             "type": "organization",
+//             "repos_count": ***
+//         }
+//     ]
+// }
+});
 ```
 
 ### [Authorization](https://api.travis-ci.org/docs/#Authorization)

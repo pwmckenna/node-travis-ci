@@ -109,7 +109,7 @@ travis.auth.github({
     github_token: GITHUB_OAUTH_TOKEN
 }, function (err, res) {
     // res => {
-    //     access_token: XXXXXXX
+    //     access_token: ***
     // }
 });
 ```

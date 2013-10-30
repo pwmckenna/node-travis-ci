@@ -91,7 +91,7 @@ module.exports = [
         uri: '/jobs/:id/cancel',
         verb: 'POST',
         tests: function () {
-            it.only('/jobs/:id/cancel', function (done) {
+            it('/jobs/:id/cancel', function (done) {
                 // trigger a build
                 this.privateTravis.requests({
                     build_id: BUILD_ID

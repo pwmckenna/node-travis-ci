@@ -3,6 +3,7 @@
 var assert = require('assert');
 var _ = require('lodash');
 
+var BUILD_ID = 10380000;
 var JOB_ID = 9624444;
 
 module.exports = [
@@ -83,6 +84,53 @@ module.exports = [
 
                     done();
                 });
+            });
+        }
+    },
+    {
+        uri: '/jobs/:id/cancel',
+        verb: 'POST',
+        tests: function () {
+            it.only('/jobs/:id/cancel', function (done) {
+                // trigger a build
+                this.privateTravis.requests({
+                    build_id: BUILD_ID
+                }, function (err, res) {
+                    if (err) { return done(new Error(err)); }
+
+                    assert(res.hasOwnProperty('result'));
+                    assert(res.hasOwnProperty('flash'));
+                    assert(res.result === true);
+
+                    // verify that the build was successfully triggered
+                    this.privateTravis.builds({
+                        id: BUILD_ID
+                    }, function (err, res) {
+                        if (err) { return done(new Error(err)); }
+
+                        assert(res.build.id === BUILD_ID);
+                        assert(res.build.state === 'created');
+
+                        // cancel the build
+                        this.privateTravis.jobs.cancel({
+                            id: res.jobs[0].id
+                        }, function (err) {
+                            if (err) { return done(new Error(err)); }
+
+                            // verify that the build was succesfully canceled
+                            this.privateTravis.builds({
+                                id: BUILD_ID
+                            }, function (err, res) {
+                                if (err) { return done(new Error(err)); }
+                                
+                                assert(res.build.id === BUILD_ID);
+                                assert(res.build.state === 'canceled');
+
+                                done();
+                            });
+                        }.bind(this));
+                    }.bind(this));
+                }.bind(this));
             });
         }
     }

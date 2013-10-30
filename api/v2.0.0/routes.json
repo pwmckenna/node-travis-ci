@@ -158,19 +158,6 @@
         ]
     },
     {
-        "name": "Endpoint",
-        "doc": "",
-        "prefix": "/endpoint",
-        "routes": [
-            {
-                "uri": "/endpoint/:id/cancel",
-                "verb": "POST",
-                "doc": "",
-                "scope": "public"
-            }
-        ]
-    },
-    {
         "name": "Endpoints",
         "doc": "Documents all available API endpoints for the currently deployed version.\nText is actually parsed from the source code upon server start.",
         "prefix": "/endpoints",
@@ -241,6 +228,12 @@
             {
                 "uri": "/jobs/:job_id/log",
                 "verb": "GET",
+                "doc": "",
+                "scope": "public"
+            },
+            {
+                "uri": "/jobs/:id/cancel",
+                "verb": "POST",
                 "doc": "",
                 "scope": "public"
             }

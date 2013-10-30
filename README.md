@@ -135,7 +135,7 @@ travis.branches(function (err, res) {
     //     branches: [],
     //     commits: []
     // }
-})
+});
 ```
 
 ### [Broadcasts](https://api.travis-ci.org/docs/#Broadcasts)
@@ -145,7 +145,7 @@ travis.broadcasts(function (err, res) {
     // res => {
     //     broadcasts: []
     // }
-})
+});
 ```
 
 ### [Builds](https://api.travis-ci.org/docs/#Builds)
@@ -250,7 +250,7 @@ travis.documentation(function (err, res) {
     // res => <html>
     //     ...
     // </html
-})
+});
 ```
 
 ### [Endpoints](https://api.travis-ci.org/docs/#Endpoints)
@@ -322,7 +322,8 @@ travis.endpoints({
     //             "scope": "public"
     //         }
     //     ]
-    // }});
+    // }
+});
 ```
 
 ### [Hooks](https://api.travis-ci.org/docs/#Hooks)
@@ -344,7 +345,8 @@ travis.hooks(function (err, res) {
     //     ...
     // ]
 });
-
+```
+```js
 travis.hooks({
     id: 1095505,
     hook: {
@@ -380,12 +382,13 @@ travis.jobs({
     //     }
     // }
 });
-
+```
+```js
 travis.jobs.log({
     job_id: JOB_ID
 }, function (err, res) {
     
-})
+});
 ```
 
 ### [Logs](https://api.travis-ci.org/docs/#Logs)
@@ -429,7 +432,8 @@ travis.repos({
     //     ]
     // }
 });
-
+```
+```js
 travis.repos({
     owner_name: 'pwmckenna',
     name: 'node-travis-ci'
@@ -443,7 +447,8 @@ travis.repos({
     //     }
     // }
 });
-
+```
+```js
 travis.repos.key({
     id: 
 }, function (err, res) {
@@ -451,7 +456,8 @@ travis.repos.key({
     //   key: '-----BEGIN RSA PUBLIC KEY-----\nMIGfMA0GCSqGSIb...'    
     // }
 });
-
+```
+```js
 travis.repos.builds({
     owner_name: 'pwmckenna',
     name: 'node-travis-ci'
@@ -493,7 +499,8 @@ travis.stats.repos(function (err, res) {
     //     }
     // }
 });
-
+```
+```js
 travis.stats.tests(function (err, res) {
     // res => {
     //     stats: {
@@ -525,9 +532,27 @@ travis.users(function (err, res) {
     //     }
     // }
 });
+```
+```js
+travis.users.permissions(function (err, res) {
+    // res => {
+    //     "permissions": [
+    //         1446577,
+    //         107140,
+    //         1402719,
+    //         1392622,
+    //         ...
+    //     ]
+    // }
 
-travis.users.permissions(function (err, res) {});
-travis.users.sync(function (err, res) {});
+});
+```
+```js
+travis.users.sync(function (err, res) {
+    // res => {
+    //     "result": true
+    // }
+});
 ```
 
 ### [Workers](https://api.travis-ci.org/docs/#Workers)

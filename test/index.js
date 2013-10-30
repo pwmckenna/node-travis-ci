@@ -74,6 +74,24 @@ describe('travis ci api test suite', function () {
         _.each(routes, function (routeSection) {
             var routeSectionTestsPath = path.resolve(__dirname, 'endpoints', routeSection.name.toLowerCase());
             var routeSectionEndpointTests = require(routeSectionTestsPath);
+
+            // verify that we don't have any tests defined for this route section that aren't necessary
+            // ie, tests that were written for routes that no longer exists.
+            // this will help us detect variable name changes in the route def
+            var unnecessaryTests = _.filter(routeSectionEndpointTests, function (section) {
+                return !_.findWhere(routeSection.routes, _.pick(section, 'uri', 'verb'));
+            });
+            if (unnecessaryTests.length > 0) {
+                _.each(unnecessaryTests, function (unnecessaryTest) {
+                    it('tests for unnecessary tests', function () {
+                        throw new Error('test for ' + unnecessaryTest.uri + ' - ' + unnecessaryTest.verb + ' is unnecessary');
+                    });
+                });
+                return;
+            }
+
+            // for each route, verify that there is a test written for it
+            // and if that test exists, run it
             _.each(routeSection.routes, function (route) {
                 var testName = 'tests ' + route.verb + ' ' + route.uri;
                 

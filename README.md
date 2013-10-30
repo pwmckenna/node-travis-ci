@@ -67,38 +67,38 @@ Accounts calls require [authentication](#Authentication).
 
 ```js
 travis.accounts(function (err, res) {
-// {
-//     "accounts": [
-//         {
-//             "id": 5186,
-//             "name": "Patrick Williams",
-//             "login": "pwmckenna",
-//             "type": "user",
-//             "repos_count": 48
-//         },
-//         {
-//             "id": ***,
-//             "name": "BitTorrent Torque Labs",
-//             "login": "bittorrenttorque",
-//             "type": "organization",
-//             "repos_count": ***
-//         },
-//         {
-//             "id": ***,
-//             "name": null,
-//             "login": "Studyokee",
-//             "type": "organization",
-//             "repos_count": ***
-//         },
-//         {
-//             "id": ***,
-//             "name": "BitTorrent Inc.",
-//             "login": "bittorrent",
-//             "type": "organization",
-//             "repos_count": ***
-//         }
-//     ]
-// }
+    // res => {
+    //     "accounts": [
+    //         {
+    //             "id": 5186,
+    //             "name": "Patrick Williams",
+    //             "login": "pwmckenna",
+    //             "type": "user",
+    //             "repos_count": 48
+    //         },
+    //         {
+    //             "id": ***,
+    //             "name": "BitTorrent Torque Labs",
+    //             "login": "bittorrenttorque",
+    //             "type": "organization",
+    //             "repos_count": ***
+    //         },
+    //         {
+    //             "id": ***,
+    //             "name": null,
+    //             "login": "Studyokee",
+    //             "type": "organization",
+    //             "repos_count": ***
+    //         },
+    //         {
+    //             "id": ***,
+    //             "name": "BitTorrent Inc.",
+    //             "login": "bittorrent",
+    //             "type": "organization",
+    //             "repos_count": ***
+    //         }
+    //     ]
+    // }
 });
 ```
 
@@ -416,11 +416,19 @@ All user calls require [authentication](#Authentication).
 ```js
 travis.users(function (err, res) {
     // res => {
-    //     id: 5186,
-    //     name: 'Patrick Williams',
-    //     login: 'pwmckenna',
-    //     ...
-    // } 
+    //     "user": {
+    //         "id": 5186,
+    //         "name": "Patrick Williams",
+    //         "login": "pwmckenna",
+    //         "email": "patrick@bittorrent.com",
+    //         "gravatar_id": "894f552b86b959df97353a7296baee5c",
+    //         "locale": "en",
+    //         "is_syncing": false,
+    //         "synced_at": "2013-10-30T22:47:49Z",
+    //         "correct_scopes": true,
+    //         "created_at": "2012-02-07T22:17:38Z"
+    //     }
+    // }
 });
 
 travis.users.permissions(function (err, res) {});

@@ -43,4 +43,52 @@ describe('travis ci api test suite', function () {
             done();
         });
     });
+
+    describe('endpoint test suite', function () {
+        this.timeout(30000);
+
+        before(function (done) {
+            this.publicTravis = new TravisCi({
+                version: '2.0.0'
+            });
+            this.privateTravis = new TravisCi({
+                version: '2.0.0'
+            });
+            this.privateTravis.auth.github({
+                github_token: process.env.GITHUB_OAUTH_TOKEN
+            }, function (err, res) {
+                if (err) { return done(new Error(err)); }
+                this.privateTravis.authenticate({
+                    access_token: res.access_token
+                }, function (err) {
+                    if (err) { return done(new Error(err)); }
+
+                    done();
+                });
+            }.bind(this));
+        });
+
+        var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
+        var routes = JSON.parse(fs.readFileSync(routesPath).toString());
+
+        _.each(routes, function (routeSection) {
+            var routeSectionTestsPath = path.resolve(__dirname, 'endpoints', routeSection.name.toLowerCase());
+            var routeSectionEndpointTests = require(routeSectionTestsPath);
+            _.each(routeSection.routes, function (route) {
+                var testName = 'tests ' + route.verb + ' ' + route.uri;
+                
+                var routeSectionTestRunner = _.findWhere(routeSectionEndpointTests, {
+                    uri: route.uri,
+                    verb: route.verb
+                });
+                if (!routeSectionTestRunner) {
+                    it(testName, function () {
+                        throw new Error('no test for ' + route.uri + ' ' + route.verb + ' in ' + routeSectionTestsPath);
+                    });
+                    return;
+                }
+                routeSectionTestRunner.tests();
+            });
+        });
+    });
 });

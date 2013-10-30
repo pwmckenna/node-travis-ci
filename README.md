@@ -50,7 +50,9 @@ travis.authenticate({
 }, function (err) {
     // we've authenticated! 
 });
-//or
+```
+or
+```js
 travis.authenticate({
     username: GITHUB_USERNAME,
     password: GITHUB_PASSWORD
@@ -68,18 +70,38 @@ Accounts calls require [authentication](#Authentication).
 ```js
 travis.accounts(function (err, res) {
     // res => {
-    //     accounts: [
+    //     "accounts": [
     //         {
-    //             id: 5186,
-    //             name: 'Patrick Williams',
-    //             login: 'pwmckenna',
-    //             type: 'user',
-    //             repos_count: 37
+    //             "id": 5186,
+    //             "name": "Patrick Williams",
+    //             "login": "pwmckenna",
+    //             "type": "user",
+    //             "repos_count": 48
     //         },
-    //         ...
+    //         {
+    //             "id": ***,
+    //             "name": "BitTorrent Torque Labs",
+    //             "login": "bittorrenttorque",
+    //             "type": "organization",
+    //             "repos_count": ***
+    //         },
+    //         {
+    //             "id": ***,
+    //             "name": null,
+    //             "login": "Studyokee",
+    //             "type": "organization",
+    //             "repos_count": ***
+    //         },
+    //         {
+    //             "id": ***,
+    //             "name": "BitTorrent Inc.",
+    //             "login": "bittorrent",
+    //             "type": "organization",
+    //             "repos_count": ***
+    //         }
     //     ]
     // }
-})
+});
 ```
 
 ### [Authorization](https://api.travis-ci.org/docs/#Authorization)
@@ -89,7 +111,7 @@ travis.auth.github({
     github_token: GITHUB_OAUTH_TOKEN
 }, function (err, res) {
     // res => {
-    //     access_token: XXXXXXX
+    //     access_token: ***
     // }
 });
 ```
@@ -113,7 +135,7 @@ travis.branches(function (err, res) {
     //     branches: [],
     //     commits: []
     // }
-})
+});
 ```
 
 ### [Broadcasts](https://api.travis-ci.org/docs/#Broadcasts)
@@ -123,19 +145,12 @@ travis.broadcasts(function (err, res) {
     // res => {
     //     broadcasts: []
     // }
-})
+});
 ```
 
 ### [Builds](https://api.travis-ci.org/docs/#Builds)
 
 ```js
-travis.builds(function (err, res) {
-    // res => {
-    //     builds: [],
-    //     commits: []
-    // }
-})
-
 // to get the info for a specific build, specify the build id
 // this is data used for pages such as:
 // https://travis-ci.org/pwmckenna/node-travis-ci/builds/10380000
@@ -143,31 +158,84 @@ travis.builds({
     id: 10380000
 }, function (err, res) {
     // res => {
-    //     build: {
-    //         id: 10380000,
-    //         repository_id: 1095505,
-    //         commit_id: 3053424,
-    //         state: 'canceled',
-    //         started_at: null,
-    //         finished_at: '2013-10-28T21:07:02Z',
-    //         duration: 0,
-    //         job_ids: [ 10380001 ]
+    //     "build": {
+    //         "id": 10380000,
+    //         "repository_id": 1095505,
+    //         "commit_id": 3053424,
+    //         "number": "43",
+    //         "pull_request": false,
+    //         "pull_request_title": null,
+    //         "pull_request_number": null,
+    //         "config": {
+    //             "language": "node_js",
+    //             "node_js": [
+    //                 "0.10.1"
+    //             ],
+    //             "script": [
+    //                 "./node_modules/grunt-cli/bin/grunt test"
+    //             ],
+    //             ".result": "configured",
+    //             "global_env": [
+    //                 {
+    //                     "secure": "SHezJGUSi1cc/V+AWBgmGe...
+    //                 },
+    //                 {
+    //                     "secure": "opq2IxY6TquOtn4nCI75Y...
+    //                 },
+    //                 {
+    //                     "secure": "f4rapdrgZJIeqUUBu3Bp/...
+    //                 }
+    //             ]
+    //         },
+    //         "state": "canceled",
+    //         "started_at": null,
+    //         "finished_at": "2013-10-30T23:19:20Z",
+    //         "duration": 0,
+    //         "job_ids": [
+    //             10380001
+    //         ]
     //     },
-    //     commit: {
-    //         id: 3053424,
-    //         branch: 'master',
-    //         message: '1.0.1',
-    //         author_email: 'pwmckenna@gmail.com',
-    //         ...
+    //     "commit": {
+    //         "id": 3053424,
+    //         "sha": "af594e5b0744e6fdd4af5c7470652286420db430",
+    //         "branch": "master",
+    //         "message": "1.0.1",
+    //         "committed_at": "2013-08-19T20:12:25Z",
+    //         "author_name": "Patrick Williams",
+    //         "author_email": "pwmckenna@gmail.com",
+    //         "committer_name": "Patrick Williams",
+    //         "committer_email": "pwmckenna@gmail.com",
+    //         "compare_url": "https://github.com/pwmckenna/node-travis-ci/...
     //     },
-    //     jobs: [{
-    //         id: 10380001,
-    //         build_id: 10380000,
-    //         ...
-    //     }]
+    //     "jobs": [
+    //         {
+    //             "id": 10380001,
+    //             "repository_id": 1095505,
+    //             "build_id": 10380000,
+    //             "commit_id": 3053424,
+    //             "log_id": 4540661,
+    //             "state": "canceled",
+    //             "number": "43.1",
+    //             "config": {
+    //                 "language": "node_js",
+    //                 "node_js": "0.10.1",
+    //                 "script": [
+    //                     "./node_modules/grunt-cli/bin/grunt test"
+    //                 ],
+    //                 ".result": "configured",
+    //                 "global_env": "GITHUB_OAUTH_TOKEN=[secure] ...
+    //             },
+    //             "started_at": null,
+    //             "finished_at": "2013-10-30T23:19:19Z",
+    //             "queue": "builds.linux",
+    //             "allow_failure": false,
+    //             "tags": ""
+    //         }
+    //     ]
     // }
-})
-
+});
+```
+```js
 // to cancel a build
 travis.builds.cancel({
     id: 10380000
@@ -182,7 +250,7 @@ travis.documentation(function (err, res) {
     // res => <html>
     //     ...
     // </html
-})
+});
 ```
 
 ### [Endpoints](https://api.travis-ci.org/docs/#Endpoints)
@@ -191,21 +259,69 @@ travis.documentation(function (err, res) {
 travis.endpoints(function (err, res) {
     // res => [
     //     {
-    //         name: 'Home',
-    //         prefix: '/',
-    //         ...
+    //         "name": "Home",
+    //         "doc": "",
+    //         "prefix": "/",
+    //         "routes": [
+    //             {
+    //                 "uri": "/",
+    //                 "verb": "GET",
+    //                 "doc": "Landing point...",
+    //                 "scope": "public"
+    //             },
+    //             {
+    //                 "uri": "/redirect",
+    //                 "verb": "GET",
+    //                 "doc": "Simple endpoints that redirects somewhere else...",
+    //                 "scope": "public"
+    //             },
+    //             {
+    //                 "uri": "/config",
+    //                 "verb": "GET",
+    //                 "doc": "Provides you with system info:...",
+    //                 "scope": "public"
+    //             }
+    //         ]
+    //     },
+    //     {
+    //         "name": "Accounts",
+    //         "doc": "",
+    //         "prefix": "/accounts",
+    //         "routes": [
+    //             {
+    //                 "uri": "/accounts/",
+    //                 "verb": "GET",
+    //                 "doc": "",
+    //                 "scope": "private"
+    //             }
+    //         ]
     //     },
     //     ...
     // ]
 });
-
+```
+```js
 travis.endpoints({
     prefix: 'endpoints'
 }, function (err, res) {
     // res => {
-    //     name: 'Endpoints',
-    //     prefix: '/endpoints',
-    //     ...
+    //     "name": "Endpoints",
+    //     "doc": "Documents all available API endpoints...",
+    //     "prefix": "/endpoints",
+    //     "routes": [
+    //         {
+    //             "uri": "/endpoints/",
+    //             "verb": "GET",
+    //             "doc": "Lists all available API endpoints by URI prefix...",
+    //             "scope": "public"
+    //         },
+    //         {
+    //             "uri": "/endpoints/:prefix",
+    //             "verb": "GET",
+    //             "doc": "Infos about a specific controller....",
+    //             "scope": "public"
+    //         }
+    //     ]
     // }
 });
 ```
@@ -229,7 +345,8 @@ travis.hooks(function (err, res) {
     //     ...
     // ]
 });
-
+```
+```js
 travis.hooks({
     id: 1095505,
     hook: {
@@ -265,12 +382,13 @@ travis.jobs({
     //     }
     // }
 });
-
+```
+```js
 travis.jobs.log({
     job_id: JOB_ID
 }, function (err, res) {
     
-})
+});
 ```
 
 ### [Logs](https://api.travis-ci.org/docs/#Logs)
@@ -314,7 +432,8 @@ travis.repos({
     //     ]
     // }
 });
-
+```
+```js
 travis.repos({
     owner_name: 'pwmckenna',
     name: 'node-travis-ci'
@@ -328,7 +447,8 @@ travis.repos({
     //     }
     // }
 });
-
+```
+```js
 travis.repos.key({
     id: 
 }, function (err, res) {
@@ -336,7 +456,8 @@ travis.repos.key({
     //   key: '-----BEGIN RSA PUBLIC KEY-----\nMIGfMA0GCSqGSIb...'    
     // }
 });
-
+```
+```js
 travis.repos.builds({
     owner_name: 'pwmckenna',
     name: 'node-travis-ci'
@@ -378,7 +499,8 @@ travis.stats.repos(function (err, res) {
     //     }
     // }
 });
-
+```
+```js
 travis.stats.tests(function (err, res) {
     // res => {
     //     stats: {
@@ -396,15 +518,41 @@ All user calls require [authentication](#Authentication).
 ```js
 travis.users(function (err, res) {
     // res => {
-    //     id: 5186,
-    //     name: 'Patrick Williams',
-    //     login: 'pwmckenna',
-    //     ...
-    // } 
+    //     "user": {
+    //         "id": 5186,
+    //         "name": "Patrick Williams",
+    //         "login": "pwmckenna",
+    //         "email": "patrick@bittorrent.com",
+    //         "gravatar_id": "894f552b86b959df97353a7296baee5c",
+    //         "locale": "en",
+    //         "is_syncing": false,
+    //         "synced_at": "2013-10-30T22:47:49Z",
+    //         "correct_scopes": true,
+    //         "created_at": "2012-02-07T22:17:38Z"
+    //     }
+    // }
 });
+```
+```js
+travis.users.permissions(function (err, res) {
+    // res => {
+    //     "permissions": [
+    //         1446577,
+    //         107140,
+    //         1402719,
+    //         1392622,
+    //         ...
+    //     ]
+    // }
 
-travis.users.permissions(function (err, res) {});
-travis.users.sync(function (err, res) {});
+});
+```
+```js
+travis.users.sync(function (err, res) {
+    // res => {
+    //     "result": true
+    // }
+});
 ```
 
 ### [Workers](https://api.travis-ci.org/docs/#Workers)

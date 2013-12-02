@@ -30,6 +30,20 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('update-routes', function () {
+        var done = this.async();
+        var Travis = require('./');
+        var fs = require('fs');
+        var path = require('path');
+        var travis = new Travis({
+            version: '2.0.0'
+        });
+        travis.endpoints(function (err, endpoints) {
+            fs.writeFileSync(path.resolve(__dirname, 'api/v2.0.0/routes.json'), JSON.stringify(endpoints, null, 4));
+            done();
+        });
+    });
+
     grunt.registerTask('test', function () {
         grunt.task.run(['jshint', 'env:test', 'mochaTest']);
     });

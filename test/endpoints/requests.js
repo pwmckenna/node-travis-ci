@@ -18,7 +18,7 @@ module.exports = [
                     assert(res.hasOwnProperty('builds'));
                     assert(res.hasOwnProperty('commits'));
 
-                    var BUILD_ID = 10380000;
+                    var BUILD_ID = 9635080;
                     assert(_.findWhere(res.builds, {
                         id: BUILD_ID
                     }));
@@ -32,6 +32,7 @@ module.exports = [
                         assert(res.hasOwnProperty('flash'));
                         assert(_.isArray(res.flash));
                         assert(!_.any(res.flash, function (flash) {
+                            console.warn(JSON.stringify(flash, null, 4));
                             return flash.hasOwnProperty('error');
                         }), 'build request should not return errors');
 

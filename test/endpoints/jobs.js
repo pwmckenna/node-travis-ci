@@ -3,8 +3,10 @@
 var assert = require('assert');
 var _ = require('lodash');
 
-var BUILD_ID = 9655694;
-var JOB_ID = 9655695;
+var BUILD_ID = 13281947;
+var JOB_ID = 13281948;
+
+var BUILD_ID_2 = 9921073;
 
 var STATIC_BUILD_ID = 9656943;
 var STATIC_JOB_ID = 9656944;
@@ -96,7 +98,7 @@ module.exports = [
             it('/jobs/:id/cancel', function (done) {
                 // trigger a build
                 this.privateTravis.requests({
-                    build_id: BUILD_ID
+                    build_id: BUILD_ID_2
                 }, function (err, res) {
                     if (err) { return done(new Error(err)); }
 
@@ -110,11 +112,11 @@ module.exports = [
 
                     // verify that the build was successfully triggered
                     this.privateTravis.builds({
-                        id: BUILD_ID
+                        id: BUILD_ID_2
                     }, function (err, res) {
                         if (err) { return done(new Error(err)); }
 
-                        assert(res.build.id === BUILD_ID);
+                        assert(res.build.id === BUILD_ID_2);
                         assert(res.build.state === 'created');
 
                         // cancel the build
@@ -125,11 +127,11 @@ module.exports = [
 
                             // verify that the build was succesfully canceled
                             this.privateTravis.builds({
-                                id: BUILD_ID
+                                id: BUILD_ID_2
                             }, function (err, res) {
                                 if (err) { return done(new Error(err)); }
                                 
-                                assert(res.build.id === BUILD_ID);
+                                assert(res.build.id === BUILD_ID_2);
                                 assert(res.build.state === 'canceled');
 
                                 done();

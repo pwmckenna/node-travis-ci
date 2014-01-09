@@ -25,6 +25,7 @@ module.exports = [
             it('/config', function (done) {
                 this.publicTravis.config(function (err, res) {
                     if (err) { return done(new Error(err)); }
+
                     assert(_.isEqual(res, {
                         'config': {
                             'host': 'travis-ci.org',
@@ -36,6 +37,14 @@ module.exports = [
                             },
                             'pusher': {
                                 'key': '5df8ac576dcccf4fd076'
+                            },
+                            'github': {
+                                'api_url': 'https://api.github.com',
+                                'scopes': [
+                                    'public_repo',
+                                    'user:email',
+                                    'user'
+                                ]
                             }
                         }
                     }));

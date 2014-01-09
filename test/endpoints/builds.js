@@ -1,9 +1,10 @@
 'use strict';
 
 var assert = require('assert');
+var _ = require('lodash');
 require('should');
 
-var BUILD_ID = 10380000;
+var BUILD_ID = 9655694;
 
 module.exports = [
     {
@@ -43,8 +44,12 @@ module.exports = [
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('result'));
-                    assert(res.hasOwnProperty('flash'));
                     assert(res.result === true);
+                    assert(res.hasOwnProperty('flash'));
+                    assert(_.isArray(res.flash));
+                    assert(!_.any(res.flash, function (flash) {
+                        return flash.hasOwnProperty('error');
+                    }), 'build request should not return errors');
 
                     // verify that the build was successfully triggered
                     this.privateTravis.builds({
@@ -52,6 +57,56 @@ module.exports = [
                     }, function (err, res) {
                         if (err) { return done(new Error(err)); }
 
+                        assert(res.build.id === BUILD_ID);
+                        assert(res.build.state === 'created');
+
+                        // cancel the build
+                        this.privateTravis.builds.cancel({
+                            id: BUILD_ID
+                        }, function (err) {
+                            if (err) { return done(new Error(err)); }
+
+                            // verify that the build was succesfully canceled
+                            this.privateTravis.builds({
+                                id: BUILD_ID
+                            }, function (err, res) {
+                                if (err) { return done(new Error(err)); }
+                                
+                                assert(res.build.id === BUILD_ID);
+                                assert(res.build.state === 'canceled');
+
+                                done();
+                            });
+                        }.bind(this));
+                    }.bind(this));
+                }.bind(this));
+            });
+        }
+    },
+    {
+        uri: '/builds/:id/restart',
+        verb: 'POST',
+        tests: function () {
+            it('/builds/:id/restart', function (done) {
+                // restart a build
+                this.privateTravis.builds.restart({
+                    id: BUILD_ID
+                }, function (err, res) {
+                    if (err) { return done(new Error(err)); }
+
+                    assert(res.hasOwnProperty('result'));
+                    assert(res.result === true);
+                    assert(res.hasOwnProperty('flash'));
+                    assert(_.isArray(res.flash));
+                    assert(!_.any(res.flash, function (flash) {
+                        return flash.hasOwnProperty('error');
+                    }), 'build request should not return errors');
+
+                    // verify that the build was successfully triggered
+                    this.privateTravis.builds({
+                        id: BUILD_ID
+                    }, function (err, res) {
+                        if (err) { return done(new Error(err)); }
                         assert(res.build.id === BUILD_ID);
                         assert(res.build.state === 'created');
 

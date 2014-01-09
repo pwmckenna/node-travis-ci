@@ -28,8 +28,12 @@ module.exports = [
                         if (err) { return done(new Error(err)); }
 
                         assert(res.hasOwnProperty('result'));
-                        assert(res.hasOwnProperty('flash'));
                         assert(res.result === true);
+                        assert(res.hasOwnProperty('flash'));
+                        assert(_.isArray(res.flash));
+                        assert(!_.any(res.flash, function (flash) {
+                            return flash.hasOwnProperty('error');
+                        }), 'build request should not return errors');
 
                         // cancel the build to keep our tests tidy
                         this.privateTravis.builds.cancel({

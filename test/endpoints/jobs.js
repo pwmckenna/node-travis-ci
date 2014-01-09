@@ -3,8 +3,11 @@
 var assert = require('assert');
 var _ = require('lodash');
 
-var BUILD_ID = 10380000;
-var JOB_ID = 9624444;
+var BUILD_ID = 9655694;
+var JOB_ID = 9655695;
+
+var STATIC_BUILD_ID = 9656943;
+var STATIC_JOB_ID = 9656944;
 
 module.exports = [
     {
@@ -21,21 +24,20 @@ module.exports = [
             it('/jobs/:id', function (done) {
                 this.timeout(60000);
                 this.publicTravis.jobs({
-                    id: JOB_ID
+                    id: STATIC_JOB_ID
                 }, function (err, res) {
                     if (err) {
                         return done(new Error(err));
                     }
-
                     assert(_.isEqual(res, {
                         'job': {
-                            'id': 9624444,
+                            'id': STATIC_JOB_ID,
                             'repository_id': 1095505,
                             'repository_slug': 'pwmckenna/node-travis-ci',
-                            'build_id': 9624443,
-                            'commit_id': 2836527,
-                            'log_id': 3986694,
-                            'number': '30.1',
+                            'build_id': STATIC_BUILD_ID,
+                            'commit_id': 2845676,
+                            'log_id': 4010707,
+                            'number': '39.1',
                             'config': {
                                 'language': 'node_js',
                                 'node_js': '0.10.1',
@@ -43,26 +45,26 @@ module.exports = [
                                     './node_modules/grunt-cli/bin/grunt test'
                                 ],
                                 '.result': 'configured',
-                                'global_env': 'GITHUB_OAUTH_TOKEN=[secure]'
+                                'global_env': 'GITHUB_OAUTH_TOKEN=[secure] GITHUB_USERNAME=[secure] GITHUB_PASSWORD=[secure]'
                             },
-                            'state': 'failed',
-                            'started_at': '2013-07-29T23:49:43Z',
-                            'finished_at': '2013-07-29T23:51:42Z',
+                            'state': 'passed',
+                            'started_at': '2013-08-02T23:35:40Z',
+                            'finished_at': '2013-08-02T23:36:40Z',
                             'queue': 'builds.linux',
                             'allow_failure': false,
                             'tags': ''
                         },
                         'commit': {
-                            'id': 2836527,
-                            'sha': '431d6e5d899f165e4786ce82c4672975cddca670',
+                            'id': 2845676,
+                            'sha': '7d8c6b1e14041ed17b794d8453617e0992e09586',
                             'branch': 'master',
-                            'message': 'fixing builds test',
-                            'committed_at': '2013-07-29T22:08:00Z',
+                            'message': '1.0.0',
+                            'committed_at': '2013-07-30T16:54:56Z',
                             'author_name': 'Patrick Williams',
                             'author_email': 'pwmckenna@gmail.com',
                             'committer_name': 'Patrick Williams',
                             'committer_email': 'pwmckenna@gmail.com',
-                            'compare_url': 'https://github.com/pwmckenna/node-travis-ci/compare/492b9f2e1f5f...431d6e5d899f'
+                            'compare_url': 'https://github.com/pwmckenna/node-travis-ci/compare/cf14e82161a1...7d8c6b1e1404'
                         }
                     }));
 
@@ -99,8 +101,12 @@ module.exports = [
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('result'));
-                    assert(res.hasOwnProperty('flash'));
                     assert(res.result === true);
+                    assert(res.hasOwnProperty('flash'));
+                    assert(_.isArray(res.flash));
+                    assert(!_.any(res.flash, function (flash) {
+                        return flash.hasOwnProperty('error');
+                    }), 'build request should not return errors');
 
                     // verify that the build was successfully triggered
                     this.privateTravis.builds({
@@ -128,6 +134,63 @@ module.exports = [
 
                                 done();
                             });
+                        }.bind(this));
+                    }.bind(this));
+                }.bind(this));
+            });
+        }
+    },
+    {
+        uri: '/jobs/:id/restart',
+        verb: 'POST',
+        tests: function () {
+            it('/jobs/:id/restart', function (done) {
+                // request the build to start it off...
+                // we can only restart in progress jobs
+                this.privateTravis.requests({
+                    build_id: BUILD_ID
+                }, function (err) {
+                    if (err) { return done(new Error(err)); }
+
+                    this.privateTravis.jobs.restart({
+                        id: JOB_ID
+                    }, function (err, res) {
+                        if (err) { return done(new Error(err)); }
+
+                        assert(res.hasOwnProperty('result'));
+                        assert(res.result === true);
+                        assert(res.hasOwnProperty('flash'));
+                        assert(_.isArray(res.flash));
+                        assert(!_.any(res.flash, function (flash) {
+                            return flash.hasOwnProperty('error');
+                        }), 'build request should not return errors');
+
+                        // verify that the build was successfully triggered
+                        this.privateTravis.builds({
+                            id: BUILD_ID
+                        }, function (err, res) {
+                            if (err) { return done(new Error(err)); }
+                            assert(res.build.id === BUILD_ID);
+                            assert(res.build.state === 'created');
+
+                            // cancel the build
+                            this.privateTravis.builds.cancel({
+                                id: BUILD_ID
+                            }, function (err) {
+                                if (err) { return done(new Error(err)); }
+
+                                // verify that the build was succesfully canceled
+                                this.privateTravis.builds({
+                                    id: BUILD_ID
+                                }, function (err, res) {
+                                    if (err) { return done(new Error(err)); }
+                                    
+                                    assert(res.build.id === BUILD_ID);
+                                    assert(res.build.state === 'canceled');
+
+                                    done();
+                                });
+                            }.bind(this));
                         }.bind(this));
                     }.bind(this));
                 }.bind(this));

@@ -181,6 +181,29 @@ module.exports = [
         }
     },
     {
+        uri: '/repos/:repository_id/caches',
+        verb: 'GET',
+        tests: function () {
+            it('/repos/:repository_id/caches', function (done) {
+                this.privateTravis.repos.caches({
+                    repository_id: PROJECT_TRAVIS_REPO_ID
+                }, function (err, res) {
+                    if (err) { return done(new Error(err)); }
+                    assert(res.hasOwnProperty('caches'));
+                    assert(_.isArray(res.caches));
+                    done();
+                });
+            });
+        }
+    },
+    {
+        uri: '/repos/:repository_id/caches',
+        verb: 'DELETE',
+        tests: function () {
+            console.warn('/repos/:repository_id/caches - NO WAY TO DISTINGUISH BETWEEN GET/DELETE ROUTES');
+        }
+    },
+    {
         uri: '/repos/:owner_name/:name',
         verb: 'GET',
         tests: function () {
@@ -199,6 +222,36 @@ module.exports = [
                     done();
                 }.bind(this));
             });
+        }
+    },
+    {
+        uri: '/repos/:id/settings',
+        verb: 'GET',
+        tests: function () {
+            it('/repos/:id/settings', function (done) {
+                this.privateTravis.repos.settings({
+                    id: PROJECT_TRAVIS_REPO_ID
+                }, function (err, res) {
+                    if (err) { return done(new Error(err)); }
+
+                    assert(_.isEqual(res, {
+                        'settings': {
+                            'builds_only_with_travis_yml': false,
+                            'build_pushes': true,
+                            'build_pull_requests': true
+                        }
+                    }));
+
+                    done();
+                });
+            });
+        }
+    },
+    {
+        uri: '/repos/:id/settings',
+        verb: 'PATCH',
+        tests: function () {
+            console.warn('/repos/:id/settings - NO WAY TO DISTINGUISH BETWEEN GET/PATCH ROUTES');
         }
     },
     {
@@ -343,6 +396,30 @@ module.exports = [
                     done();
                 });
             });
+        }
+    },
+    {
+        uri: '/repos/:owner_name/:name/caches',
+        verb: 'GET',
+        tests: function () {
+            it('/repos/:owner_name/:name/caches', function (done) {
+                this.privateTravis.repos.caches({
+                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
+                    name: PROJECT_TRAVIS_NAME
+                }, function (err, res) {
+                    if (err) { return done(new Error(err)); }
+                    assert(res.hasOwnProperty('caches'));
+                    assert(_.isArray(res.caches));
+                    done();
+                });
+            });
+        }
+    },
+    {
+        uri: '/repos/:owner_name/:name/caches',
+        verb: 'DELETE',
+        tests: function () {
+            console.warn('/repos/:owner_name/:name/caches - NO WAY TO DISTINGUISH BETWEEN GET/DELETE ROUTES');
         }
     }
 ];

@@ -3,6 +3,7 @@
 require('should');
 var _ = require('lodash');
 var assert = require('assert');
+var q = require('q');
 
 module.exports = [
     {
@@ -15,20 +16,35 @@ module.exports = [
             });
 
             it('/accounts/', function (done) {
-                this.publicTravis.accounts({}, function (err) {
-                    if (!err) { return done(new Error('expected an error')); }
+                q.resolve().then(function () {
 
-                    this.privateTravis.accounts({}, function (err) {
-                        if (err) { return done(new Error(err)); }
-
-                        done();
+                    var accounts = q.defer();
+                    this.publicTravis.accounts({}, accounts.makeNodeResolver());
+                    return accounts.promise.then(function () {
+                        return q.reject('Expected an error');
+                    }, function () {
+                        return q.resolve();
                     });
-                }.bind(this));
+
+                }.bind(this)).then(function () {
+
+                    var accounts = q.defer();
+                    this.privateTravis.accounts({}, accounts.makeNodeResolver());
+                    return accounts.promise;
+
+                }.bind(this)).then(function () {
+                    done();
+                }).fail(function (err) {
+                    done(new Error(err));
+                });
             });
 
             it('/accounts/', function (done) {
-                this.privateTravis.accounts({}, function (err, res) {
-                    if (err) { return done(new Error(err)); }
+                q.resolve().then(function () {
+                    var accounts = q.defer();
+                    this.privateTravis.accounts({}, accounts.makeNodeResolver());
+                    return accounts.promise;
+                }.bind(this)).then(function (res) {
 
                     var accounts = res.accounts;
 
@@ -38,13 +54,13 @@ module.exports = [
                         login: 'pwmckenna',
                         type: 'user',
                     });
+                    assert(hook);
                     assert(hook.hasOwnProperty('repos_count'));
 
-                    if (!hook) {
-                        return done(new Error('accounts did not contain expected account for pwmckenna'));
-                    }
-
+                }).then(function () {
                     done();
+                }).fail(function (err) {
+                    done(new Error(err));
                 });
             });
         }

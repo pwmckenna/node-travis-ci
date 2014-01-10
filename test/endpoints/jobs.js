@@ -1,10 +1,8 @@
 'use strict';
 
+var q = require('q');
 var assert = require('assert');
 var _ = require('lodash');
-
-var BUILD_ID = 13281947;
-var JOB_ID = 13281948;
 
 var BUILD_ID_2 = 9921073;
 
@@ -25,12 +23,16 @@ module.exports = [
         tests: function () {
             it('/jobs/:id', function (done) {
                 this.timeout(60000);
-                this.publicTravis.jobs({
-                    id: STATIC_JOB_ID
-                }, function (err, res) {
-                    if (err) {
-                        return done(new Error(err));
-                    }
+                q.resolve().then(function () {
+
+                    var jobs = q.defer();
+                    this.publicTravis.jobs({
+                        id: STATIC_JOB_ID
+                    }, jobs.makeNodeResolver());
+                    return jobs.promise;
+
+                }.bind(this)).then(function (res) {
+
                     assert(_.isEqual(res, {
                         'job': {
                             'id': STATIC_JOB_ID,
@@ -70,7 +72,10 @@ module.exports = [
                         }
                     }));
 
+                }).then(function () {
                     done();
+                }).fail(function (err) {
+                    done(new Error(err));
                 });
             });
         }
@@ -79,14 +84,22 @@ module.exports = [
         uri: '/jobs/:job_id/log',
         verb: 'GET',
         tests: function () {
+            var JOB_ID = 13291449;
+
             it('/jobs/:job_id/log', function (done) {
                 this.timeout(60000);
-                this.publicTravis.jobs.log({
-                    job_id: JOB_ID
-                }, function (err) {
-                    if (err) { return done(new Error(err)); }
+                q.resolve().then(function () {
 
+                    var log = q.defer();
+                    this.publicTravis.jobs.log({
+                        job_id: JOB_ID
+                    }, log.makeNodeResolver());
+                    return log.promise;
+
+                }.bind(this)).then(function () {
                     done();
+                }).fail(function (err) {
+                    done(new Error(err));
                 });
             });
         }
@@ -97,10 +110,107 @@ module.exports = [
         tests: function () {
             it('/jobs/:id/cancel', function (done) {
                 // trigger a build
-                this.privateTravis.requests({
-                    build_id: BUILD_ID_2
-                }, function (err, res) {
-                    if (err) { return done(new Error(err)); }
+                q.resolve().then(function () {
+
+                    // trigger the build
+                    var requests = q.defer();
+                    this.privateTravis.requests({
+                        build_id: BUILD_ID_2
+                    }, requests.makeNodeResolver());
+                    return requests.promise;
+
+                }.bind(this)).then(function (res) {
+
+                    // verify that the build request succeeded
+                    assert(res.hasOwnProperty('result'));
+                    assert(res.result === true);
+                    assert(res.hasOwnProperty('flash'));
+                    assert(_.isArray(res.flash));
+                    assert(!_.any(res.flash, function (flash) {
+                        return flash.hasOwnProperty('error');
+                    }), 'build request should not return errors');
+
+                }).then(function () {
+
+                    // verify that the build was successfully triggered
+                    var builds = q.defer();
+                    this.privateTravis.builds({
+                        id: BUILD_ID_2
+                    }, builds.makeNodeResolver());
+                    return builds.promise;
+
+                }.bind(this)).then(function (res) {
+
+                    assert(res.build.id === BUILD_ID_2);
+                    assert(res.build.state === 'created');
+
+                    // cancel the build
+                    var cancel = q.defer();
+                    this.privateTravis.jobs.cancel({
+                        id: res.jobs[0].id
+                    }, cancel.makeNodeResolver());
+                    return cancel.promise;
+
+                }.bind(this)).then(function () {
+
+                    // verify that the build was succesfully canceled
+                    var builds = q.defer();
+                    this.privateTravis.builds({
+                        id: BUILD_ID_2
+                    }, builds.makeNodeResolver());
+                    return builds.promise;
+
+                }.bind(this)).then(function (res) {
+
+                    assert(res.build.id === BUILD_ID_2);
+                    assert(res.build.state === 'canceled');
+
+                }).then(function () {
+                    done();
+                }).fail(function (err) {
+                    done(new Error(err));
+                });
+            });
+        }
+    },
+    {
+        uri: '/jobs/:id/restart',
+        verb: 'POST',
+        tests: function () {
+            // var BUILD_ID = 16675161;
+            // var JOB_ID = 16675162;
+
+            it('/jobs/:id/restart', function (done) {
+                var BUILD_ID = 16675161;
+
+                q.resolve().then(function () {
+                    var builds = q.defer();
+                    this.privateTravis.repos.builds({
+                        owner_name: 'pwmckenna',
+                        name: 'node-travis-ci'
+                    }, builds.makeNodeResolver());
+                    return builds.promise;
+                }.bind(this)).then(function (res) {
+
+                    assert(res.hasOwnProperty('builds'));
+                    assert(res.hasOwnProperty('commits'));
+
+                    var build = _.findWhere(res.builds, {
+                        id: BUILD_ID
+                    });
+
+                    assert(build);
+                    assert(_.isArray(build.job_ids));
+                    assert(build.job_ids.length);
+                    var jobId = build.job_ids[0];
+                    
+                    var restart = q.defer();
+                    this.privateTravis.jobs.restart({
+                        id: jobId
+                    }, restart.makeNodeResolver());
+                    return restart.promise;
+
+                }.bind(this)).then(function (res) {
 
                     assert(res.hasOwnProperty('result'));
                     assert(res.result === true);
@@ -110,92 +220,19 @@ module.exports = [
                         return flash.hasOwnProperty('error');
                     }), 'build request should not return errors');
 
-                    // verify that the build was successfully triggered
-                    this.privateTravis.builds({
-                        id: BUILD_ID_2
-                    }, function (err, res) {
-                        if (err) { return done(new Error(err)); }
+                }).fin(function () {
+                    // cancel the build to keep our tests tidy
+                    var cancel = q.defer();
+                    this.privateTravis.builds.cancel({
+                        id: BUILD_ID
+                    }, cancel.makeNodeResolver());
+                    return cancel.promise;
 
-                        assert(res.build.id === BUILD_ID_2);
-                        assert(res.build.state === 'created');
-
-                        // cancel the build
-                        this.privateTravis.jobs.cancel({
-                            id: res.jobs[0].id
-                        }, function (err) {
-                            if (err) { return done(new Error(err)); }
-
-                            // verify that the build was succesfully canceled
-                            this.privateTravis.builds({
-                                id: BUILD_ID_2
-                            }, function (err, res) {
-                                if (err) { return done(new Error(err)); }
-                                
-                                assert(res.build.id === BUILD_ID_2);
-                                assert(res.build.state === 'canceled');
-
-                                done();
-                            });
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
-            });
-        }
-    },
-    {
-        uri: '/jobs/:id/restart',
-        verb: 'POST',
-        tests: function () {
-            it('/jobs/:id/restart', function (done) {
-                // request the build to start it off...
-                // we can only restart in progress jobs
-                this.privateTravis.requests({
-                    build_id: BUILD_ID
-                }, function (err) {
-                    if (err) { return done(new Error(err)); }
-
-                    this.privateTravis.jobs.restart({
-                        id: JOB_ID
-                    }, function (err, res) {
-                        if (err) { return done(new Error(err)); }
-
-                        assert(res.hasOwnProperty('result'));
-                        assert(res.result === true);
-                        assert(res.hasOwnProperty('flash'));
-                        assert(_.isArray(res.flash));
-                        assert(!_.any(res.flash, function (flash) {
-                            return flash.hasOwnProperty('error');
-                        }), 'build request should not return errors');
-
-                        // verify that the build was successfully triggered
-                        this.privateTravis.builds({
-                            id: BUILD_ID
-                        }, function (err, res) {
-                            if (err) { return done(new Error(err)); }
-                            assert(res.build.id === BUILD_ID);
-                            assert(res.build.state === 'created');
-
-                            // cancel the build
-                            this.privateTravis.builds.cancel({
-                                id: BUILD_ID
-                            }, function (err) {
-                                if (err) { return done(new Error(err)); }
-
-                                // verify that the build was succesfully canceled
-                                this.privateTravis.builds({
-                                    id: BUILD_ID
-                                }, function (err, res) {
-                                    if (err) { return done(new Error(err)); }
-                                    
-                                    assert(res.build.id === BUILD_ID);
-                                    assert(res.build.state === 'canceled');
-
-                                    done();
-                                });
-                            }.bind(this));
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
+                }.bind(this)).then(function () {
+                    done();
+                }).fail(function (err) {
+                    done(new Error(err));
+                });
             });
         }
     }

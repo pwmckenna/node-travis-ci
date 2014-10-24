@@ -9,15 +9,17 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('exposes broadcasts', function () {
-                this.publicTravis.broadcasts.should.be.a('function');
-                this.privateTravis.broadcasts.should.be.a('function');
+                this.publicTravis.broadcasts.should.be.a('object');
+                this.publicTravis.broadcasts.get.should.be.a('function');
+                this.privateTravis.broadcasts.should.be.a('object');
+                this.privateTravis.broadcasts.get.should.be.a('function');
             });
 
             it('does not have permission to view broadcasts without authenticating', function (done) {
-                this.publicTravis.broadcasts({}, function (err) {
+                this.publicTravis.broadcasts.get({}, function (err) {
                     if (!err) { return done(new Error('expected an error')); }
 
-                    this.privateTravis.broadcasts({}, function (err) {
+                    this.privateTravis.broadcasts.get({}, function (err) {
                         if (err) { return done(new Error(err)); }
 
                         done();
@@ -26,7 +28,7 @@ module.exports = [
             });
 
             it('gets broadcasts after authenticating', function (done) {
-                this.privateTravis.broadcasts({}, function (err, res) {
+                this.privateTravis.broadcasts.get({}, function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('broadcasts'));

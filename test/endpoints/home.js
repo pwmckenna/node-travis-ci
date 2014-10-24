@@ -23,27 +23,27 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/config', function (done) {
-                this.publicTravis.config(function (err, res) {
+                this.publicTravis.config.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
-
+                    console.log(JSON.stringify(res, null, 4));
                     assert(_.isEqual(res, {
-                        'config': {
-                            'host': 'travis-ci.org',
-                            'shorten_host': 'trvs.io',
-                            'assets': {
-                                'host': 'travis-ci.org',
-                                'version': 'asset-id',
-                                'interval': 15
+                        config: {
+                            host: 'travis-ci.org',
+                            shorten_host: 'trvs.io',
+                            assets: {
+                                host: 'travis-ci.org'
                             },
-                            'pusher': {
-                                'key': '5df8ac576dcccf4fd076'
+                            pusher: {
+                                key: '5df8ac576dcccf4fd076'
                             },
-                            'github': {
-                                'api_url': 'https://api.github.com',
-                                'scopes': [
-                                    'public_repo',
+                            github: {
+                                api_url: 'https://api.github.com',
+                                scopes: [
+                                    'read:org',
                                     'user:email',
-                                    'user'
+                                    'repo_deployment',
+                                    'repo:status',
+                                    'write:repo_hook'
                                 ]
                             }
                         }

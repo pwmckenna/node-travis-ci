@@ -9,9 +9,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/logs/:id', function (done) {
-                this.publicTravis.logs({
-                    id: 3986694
-                }, function (err, res) {
+                this.publicTravis.logs(3986694).get(function (err, res) {
                     if (err) {
                         return done(new Error(err));
                     }

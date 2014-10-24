@@ -7,6 +7,20 @@ var q = require('q');
 module.exports = [
     {
         uri: '/requests/',
+        verb: 'GET',
+        tests: function () {
+            console.warn('/requests/ - UNKNOWN PURPOSE. LIKES TO RETURN ERRORS.');
+        }
+    },
+    {
+        uri: '/requests/:id',
+        verb: 'GET',
+        tests: function () {
+            console.warn('/requests/ - UNKNOWN PURPOSE. LIKES TO RETURN ERRORS.');
+        }
+    },
+    {
+        uri: '/requests/',
         verb: 'POST',
         tests: function () {
             it('/requests/', function (done) {
@@ -14,10 +28,7 @@ module.exports = [
 
                 q.resolve().then(function () {
                     var builds = q.defer();
-                    this.privateTravis.repos.builds({
-                        owner_name: 'pwmckenna',
-                        name: 'node-travis-ci'
-                    }, builds.makeNodeResolver());
+                    this.privateTravis.repos('pwmckenna', 'node-travis-ci').builds.get(builds.makeNodeResolver());
                     return builds.promise;
                 }.bind(this)).then(function (res) {
 
@@ -28,11 +39,9 @@ module.exports = [
                         id: BUILD_ID
                     }));
 
-                    var requests = q.defer();
-                    this.privateTravis.requests({
-                        build_id: BUILD_ID
-                    }, requests.makeNodeResolver());
-                    return requests.promise;
+                    var defer = q.defer();
+                    this.privateTravis.requests(BUILD_ID).get(defer.makeNodeResolver());
+                    return defer.promise;
 
                 }.bind(this)).then(function (res) {
 
@@ -46,17 +55,11 @@ module.exports = [
 
                 }).fin(function () {
                     // cancel the build to keep our tests tidy
-                    var cancel = q.defer();
-                    this.privateTravis.builds.cancel({
-                        id: BUILD_ID
-                    }, cancel.makeNodeResolver());
-                    return cancel.promise;
+                    var defer = q.defer();
+                    this.privateTravis.builds(BUILD_ID).cancel.post(defer.makeNodeResolver());
+                    return defer.promise;
 
-                }.bind(this)).then(function () {
-                    done();
-                }).fail(function (err) {
-                    done(new Error(err));
-                });
+                }.bind(this)).nodeify(done);
             });
         }
     }

@@ -36,7 +36,8 @@ describe('travis ci api test suite', function () {
         var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
         var routes = JSON.parse(fs.readFileSync(routesPath).toString());
 
-        travis.endpoints(function (err, res) {
+        travis.endpoints.get(function (err, res) {
+            console.warn(err, typeof res);
             if (!_.isEqual(routes, res)) {
                 return done(new Error('stale route definitions'));
             }
@@ -52,7 +53,7 @@ describe('travis ci api test suite', function () {
         this.privateTravis = new TravisCi({
             version: '2.0.0'
         });
-        this.privateTravis.auth.github({
+        this.privateTravis.auth.github.post({
             github_token: process.env.GITHUB_OAUTH_TOKEN
         }, function (err, res) {
             if (err) { return done(new Error(err)); }

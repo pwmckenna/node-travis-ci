@@ -15,7 +15,7 @@ describe('travis ci pro repos api test suite', function () {
             version: '2.0.0',
             pro: true
         });
-        this.privateTravis.auth.github({
+        this.privateTravis.auth.github.post({
             github_token: process.env.GITHUB_OAUTH_TOKEN
         }, function (err, res) {
             if (err) { return done(new Error(err)); }
@@ -33,13 +33,13 @@ describe('travis ci pro repos api test suite', function () {
 
     it('exposes repos', function () {
         this.publicTravis.repos.should.be.a('function');
+        this.publicTravis.repos.get.should.be.a('function');
         this.privateTravis.repos.should.be.a('function');
+        this.privateTravis.repos.get.should.be.a('function');
     });
 
     it('returns all repos owned by pwmckenna', function (done) {
-        this.privateTravis.repos({
-            member: 'pwmckenna'
-        }, function (err, res) {
+        this.privateTravis.repos('pwmckenna').get(function (err, res) {
             if (err) { return done(new Error(err)); }
             var repos = res.repos;
             if (!repos) {

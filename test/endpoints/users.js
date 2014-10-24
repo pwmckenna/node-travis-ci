@@ -9,7 +9,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/users/', function (done) {
-                this.privateTravis.users(function (err, res) {
+                this.privateTravis.users.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     var user = res.user;
@@ -31,7 +31,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/users/permissions', function (done) {
-                this.privateTravis.users.permissions(function (err, res) {
+                this.privateTravis.users.permissions.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('permissions'));
@@ -47,9 +47,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/users/:id', function (done) {
-                this.privateTravis.users({
-                    id: 5186
-                }, function (err, res) {
+                this.privateTravis.users(5186).get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     var user = res.user;
@@ -79,7 +77,7 @@ module.exports = [
         verb: 'POST',
         tests: function () {
             it('/users/sync', function (done) {
-                this.privateTravis.users.sync(function (err, res) {
+                this.privateTravis.users.sync.post(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('result'));

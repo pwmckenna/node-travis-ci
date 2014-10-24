@@ -85,9 +85,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id/cc', function (done) {
-                this.publicTravis.repos.cc({
-                    id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).cc.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('repo'));
@@ -104,9 +102,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id/key', function (done) {
-                this.publicTravis.repos.key({
-                    id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).key.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.key === PROJECT_TRAVIS_PUBLIC_KEY);
@@ -127,9 +123,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:repository_id/branches', function (done) {
-                this.publicTravis.repos.branches({
-                    repository_id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).branches.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('branches'));
@@ -162,10 +156,7 @@ module.exports = [
             it('/repos/:repository_id/branches/:branch', function (done) {
                 var BRANCH_NAME = 'master';
 
-                this.publicTravis.repos.branches({
-                    repository_id: PROJECT_TRAVIS_REPO_ID,
-                    branch: BRANCH_NAME
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).branches(BRANCH_NAME).get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('branch'));
@@ -185,9 +176,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:repository_id/caches', function (done) {
-                this.privateTravis.repos.caches({
-                    repository_id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
+                this.privateTravis.repos(PROJECT_TRAVIS_REPO_ID).caches.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
                     assert(res.hasOwnProperty('caches'));
                     assert(_.isArray(res.caches));
@@ -208,10 +197,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name', function (done) {
-                this.publicTravis.repos({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('repo'));
@@ -229,16 +215,16 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id/settings', function (done) {
-                this.privateTravis.repos.settings({
-                    id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
+                this.privateTravis.repos(PROJECT_TRAVIS_REPO_ID).settings.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
-
                     assert(_.isEqual(res, {
-                        'settings': {
-                            'builds_only_with_travis_yml': false,
-                            'build_pushes': true,
-                            'build_pull_requests': true
+                        settings: {
+                            builds_only_with_travis_yml: false,
+                            build_pushes: true,
+                            build_pull_requests: true,
+                            maximum_number_of_builds: 0,
+                            timeout_hard_limit: null,
+                            timeout_log_silence: null
                         }
                     }));
 
@@ -259,10 +245,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/builds', function (done) {
-                this.publicTravis.repos.builds({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).builds.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('builds'));
@@ -280,11 +263,7 @@ module.exports = [
             var BUILD_ID = 13178154;
 
             it('/repos/:owner_name/:name/builds/:id', function (done) {
-                this.publicTravis.repos.builds({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME,
-                    id: BUILD_ID
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).builds(BUILD_ID).get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('build'));
@@ -300,9 +279,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/cc', function (done) {
-                this.publicTravis.repos.cc({
-                    id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).cc.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('repo'));
@@ -319,10 +296,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/key', function (done) {
-                this.publicTravis.repos.key({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).key.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.key === PROJECT_TRAVIS_PUBLIC_KEY);
@@ -343,10 +317,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/branches', function (done) {
-                this.publicTravis.repos.branches({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).branches.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('branches'));
@@ -379,11 +350,7 @@ module.exports = [
             it('/repos/:owner_name/:name/branches/:branch', function (done) {
                 var BRANCH_NAME = 'master';
 
-                this.publicTravis.repos.branches({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME,
-                    branch: BRANCH_NAME
-                }, function (err, res) {
+                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).branches(BRANCH_NAME).get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('branch'));
@@ -403,10 +370,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/caches', function (done) {
-                this.privateTravis.repos.caches({
-                    owner_name: PROJECT_TRAVIS_OWNER_NAME,
-                    name: PROJECT_TRAVIS_NAME
-                }, function (err, res) {
+                this.privateTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).caches.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
                     assert(res.hasOwnProperty('caches'));
                     assert(_.isArray(res.caches));

@@ -26,9 +26,7 @@ module.exports = [
                 q.resolve().then(function () {
 
                     var jobs = q.defer();
-                    this.publicTravis.jobs({
-                        id: STATIC_JOB_ID
-                    }, jobs.makeNodeResolver());
+                    this.publicTravis.jobs(STATIC_JOB_ID).get(jobs.makeNodeResolver());
                     return jobs.promise;
 
                 }.bind(this)).then(function (res) {
@@ -84,16 +82,14 @@ module.exports = [
         uri: '/jobs/:job_id/log',
         verb: 'GET',
         tests: function () {
-            var JOB_ID = 13291449;
+            var JOB_ID = '13291449';
 
             it('/jobs/:job_id/log', function (done) {
                 this.timeout(60000);
                 q.resolve().then(function () {
 
                     var log = q.defer();
-                    this.publicTravis.jobs.log({
-                        job_id: JOB_ID
-                    }, log.makeNodeResolver());
+                    this.publicTravis.jobs(JOB_ID).log.get(log.makeNodeResolver());
                     return log.promise;
 
                 }.bind(this)).then(function () {
@@ -102,6 +98,43 @@ module.exports = [
                     done(new Error(err));
                 });
             });
+        }
+    },
+    {
+        uri: '/jobs/:job_id/annotations',
+        verb: 'POST',
+        tests: function () {
+            console.warn('/jobs/:job_id/annotations - NO IDEA WHAT THIS IS FOR');
+        }
+    },
+    {
+        uri: '/jobs/:job_id/annotations',
+        verb: 'GET',
+        tests: function () {
+            var JOB_ID = '13291449';
+
+            it('/jobs/:job_id/annotations', function (done) {
+                this.timeout(60000);
+                q.resolve().then(function () {
+
+                    var log = q.defer();
+                    this.publicTravis.jobs(JOB_ID).annotations.get(log.makeNodeResolver());
+                    return log.promise;
+
+                }.bind(this)).then(function (res) {
+                    assert(_.isArray(res), 'expect array of annotations');
+                    done();
+                }).fail(function (err) {
+                    done(new Error(err));
+                });
+            });
+        }
+    },
+    {
+        uri: '/jobs/:id/log',
+        verb: 'PATCH',
+        tests: function () {
+            console.warn('/jobs/:id/log - NO IDEA WHAT THIS IS FOR');
         }
     },
     {
@@ -114,7 +147,7 @@ module.exports = [
 
                     // trigger the build
                     var requests = q.defer();
-                    this.privateTravis.requests({
+                    this.privateTravis.requests.post({
                         build_id: BUILD_ID_2
                     }, requests.makeNodeResolver());
                     return requests.promise;
@@ -134,9 +167,7 @@ module.exports = [
 
                     // verify that the build was successfully triggered
                     var builds = q.defer();
-                    this.privateTravis.builds({
-                        id: BUILD_ID_2
-                    }, builds.makeNodeResolver());
+                    this.privateTravis.builds(BUILD_ID_2).get(builds.makeNodeResolver());
                     return builds.promise;
 
                 }.bind(this)).then(function (res) {
@@ -145,31 +176,23 @@ module.exports = [
                     assert(res.build.state === 'created');
 
                     // cancel the build
-                    var cancel = q.defer();
-                    this.privateTravis.jobs.cancel({
-                        id: res.jobs[0].id
-                    }, cancel.makeNodeResolver());
-                    return cancel.promise;
+                    var defer = q.defer();
+                    this.privateTravis.jobs(res.jobs[0].id).cancel.post(defer.makeNodeResolver());
+                    return defer.promise;
 
                 }.bind(this)).then(function () {
 
                     // verify that the build was succesfully canceled
-                    var builds = q.defer();
-                    this.privateTravis.builds({
-                        id: BUILD_ID_2
-                    }, builds.makeNodeResolver());
-                    return builds.promise;
+                    var defer = q.defer();
+                    this.privateTravis.builds(BUILD_ID_2).get(defer.makeNodeResolver());
+                    return defer.promise;
 
                 }.bind(this)).then(function (res) {
 
                     assert(res.build.id === BUILD_ID_2);
                     assert(res.build.state === 'canceled');
 
-                }).then(function () {
-                    done();
-                }).fail(function (err) {
-                    done(new Error(err));
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -181,15 +204,12 @@ module.exports = [
             // var JOB_ID = 16675162;
 
             it('/jobs/:id/restart', function (done) {
-                var BUILD_ID = 16675161;
+                var BUILD_ID = '16675161';
 
                 q.resolve().then(function () {
-                    var builds = q.defer();
-                    this.privateTravis.repos.builds({
-                        owner_name: 'pwmckenna',
-                        name: 'node-travis-ci'
-                    }, builds.makeNodeResolver());
-                    return builds.promise;
+                    var defer = q.defer();
+                    this.privateTravis.repos('pwmckenna', 'node-travis-ci').builds.get(defer.makeNodeResolver());
+                    return defer.promise;
                 }.bind(this)).then(function (res) {
 
                     assert(res.hasOwnProperty('builds'));
@@ -204,11 +224,9 @@ module.exports = [
                     assert(build.job_ids.length);
                     var jobId = build.job_ids[0];
                     
-                    var restart = q.defer();
-                    this.privateTravis.jobs.restart({
-                        id: jobId
-                    }, restart.makeNodeResolver());
-                    return restart.promise;
+                    var defer = q.defer();
+                    this.privateTravis.jobs(jobId).restart.post(defer.makeNodeResolver());
+                    return defer.promise;
 
                 }.bind(this)).then(function (res) {
 
@@ -222,17 +240,11 @@ module.exports = [
 
                 }).fin(function () {
                     // cancel the build to keep our tests tidy
-                    var cancel = q.defer();
-                    this.privateTravis.builds.cancel({
-                        id: BUILD_ID
-                    }, cancel.makeNodeResolver());
-                    return cancel.promise;
+                    var defer = q.defer();
+                    this.privateTravis.builds(BUILD_ID).cancel.post(defer.makeNodeResolver());
+                    return defer.promise;
 
-                }.bind(this)).then(function () {
-                    done();
-                }).fail(function (err) {
-                    done(new Error(err));
-                });
+                }.bind(this)).nodeify(done);
             });
         }
     }

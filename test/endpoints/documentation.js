@@ -6,11 +6,11 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/docs/', function () {
-                this.publicTravis.docs.should.be.a('function');
+                this.publicTravis.docs.get.should.be.a('function');
             });
 
             it('/docs/', function (done) {
-                this.publicTravis.docs(function (err) {
+                this.publicTravis.docs.get(function (err) {
                     if (err) {
                         return done(new Error(err));
                     }

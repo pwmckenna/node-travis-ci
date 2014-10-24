@@ -9,11 +9,11 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/branches/', function () {
-                this.publicTravis.branches.should.be.a('function');
+                this.publicTravis.branches.get.should.be.a('function');
             });
 
             it('/branches/', function (done) {
-                this.publicTravis.branches(function (err, res) {
+                this.publicTravis.branches.get(function (err, res) {
                     if (err) {
                         return done(new Error(err));
                     }

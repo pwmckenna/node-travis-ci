@@ -38,7 +38,7 @@ module.exports = function (grunt) {
         var travis = new Travis({
             version: '2.0.0'
         });
-        travis.endpoints(function (err, endpoints) {
+        travis.endpoints.get(function (err, endpoints) {
             fs.writeFileSync(path.resolve(__dirname, 'api/v2.0.0/routes.json'), JSON.stringify(endpoints, null, 4));
             done();
         });

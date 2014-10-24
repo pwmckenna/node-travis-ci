@@ -22,7 +22,7 @@ module.exports = [
         verb: 'POST',
         tests: function () {
             it('/auth/github', function (done) {
-                this.publicTravis.auth.github({
+                this.publicTravis.auth.github.post({
                     'asdf': 'asdf'
                 }, function (err) {
                     if (err) {
@@ -34,7 +34,7 @@ module.exports = [
             });
 
             it('/auth/github', function (done) {
-                this.publicTravis.auth.github({
+                this.publicTravis.auth.github.post({
                     github_token: process.env.GITHUB_OAUTH_TOKEN
                 }, function (err, res) {
                     if (err) {

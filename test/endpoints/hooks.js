@@ -9,7 +9,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/hooks/ - does not have permission to view hooks without authenticating', function (done) {
-                this.publicTravis.hooks(function (err) {
+                this.publicTravis.hooks.get(function (err) {
                     if (!err) { return done(new Error('expected an error')); }
 
                     this.privateTravis.hooks(function (err) {
@@ -21,7 +21,7 @@ module.exports = [
             });
 
             it('/hooks/', function (done) {
-                this.privateTravis.hooks(function (err, res) {
+                this.privateTravis.hooks.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     var hooks = res.hooks;
@@ -49,7 +49,7 @@ module.exports = [
         verb: 'PUT',
         tests: function () {
             it('/hooks/:id - toggles the hook active property', function (done) {
-                this.privateTravis.hooks(function (err, res) {
+                this.privateTravis.hooks.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     var hooks = res.hooks;
@@ -68,15 +68,14 @@ module.exports = [
                         return done(new Error('hooks did not contain expected hook for node-travis-ci'));
                     }
 
-                    this.privateTravis.hooks({
-                        id: hook.id,
+                    this.privateTravis.hooks(hook.id).put({
                         hook: {
                             active: false
                         }
                     }, function (err) {
                         if (err) { return done(new Error(err)); }
 
-                        this.privateTravis.hooks(function (err, res) {
+                        this.privateTravis.hooks.get(function (err, res) {
                             if (err) { return done(new Error(err)); }
 
                             var hooks = res.hooks;
@@ -94,15 +93,14 @@ module.exports = [
                                 return done(new Error('hooks did not contain expected hook for node-travis-ci'));
                             }
 
-                            this.privateTravis.hooks({
-                                id: hook.id,
+                            this.privateTravis.hooks(hook.id).put({
                                 hook: {
                                     active: true
                                 }
                             }, function (err) {
                                 if (err) { return done(new Error(err)); }
 
-                                this.privateTravis.hooks(function (err, res) {
+                                this.privateTravis.hooks.get(function (err, res) {
                                     if (err) { return done(new Error(err)); }
 
                                     var hooks = res.hooks;

@@ -6,7 +6,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/uptime/', function (done) {
-                this.publicTravis.uptime(function (err) {
+                this.publicTravis.uptime.get(function (err) {
                     if (err) { return done(new Error(err)); }
 
                     done();

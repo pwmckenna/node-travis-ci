@@ -11,15 +11,15 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/accounts/', function () {
-                this.publicTravis.accounts.should.be.a('function');
-                this.privateTravis.accounts.should.be.a('function');
+                this.publicTravis.accounts.get.should.be.a('function');
+                this.privateTravis.accounts.get.should.be.a('function');
             });
 
             it('/accounts/', function (done) {
                 q.resolve().then(function () {
 
                     var accounts = q.defer();
-                    this.publicTravis.accounts({}, accounts.makeNodeResolver());
+                    this.publicTravis.accounts.get({}, accounts.makeNodeResolver());
                     return accounts.promise.then(function () {
                         return q.reject('Expected an error');
                     }, function () {
@@ -29,7 +29,7 @@ module.exports = [
                 }.bind(this)).then(function () {
 
                     var accounts = q.defer();
-                    this.privateTravis.accounts({}, accounts.makeNodeResolver());
+                    this.privateTravis.accounts.get({}, accounts.makeNodeResolver());
                     return accounts.promise;
 
                 }.bind(this)).then(function () {
@@ -42,7 +42,7 @@ module.exports = [
             it('/accounts/', function (done) {
                 q.resolve().then(function () {
                     var accounts = q.defer();
-                    this.privateTravis.accounts({}, accounts.makeNodeResolver());
+                    this.privateTravis.accounts.get({}, accounts.makeNodeResolver());
                     return accounts.promise;
                 }.bind(this)).then(function (res) {
 

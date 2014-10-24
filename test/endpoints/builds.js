@@ -19,9 +19,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/builds/:id', function (done) {
-                this.publicTravis.builds({
-                    id: BUILD_ID
-                }, function (err, res) {
+                this.publicTravis.builds(BUILD_ID).get(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('build'));
@@ -38,7 +36,7 @@ module.exports = [
         tests: function () {
             it('/builds/:id/cancel', function (done) {
                 // trigger a build
-                this.privateTravis.requests({
+                this.privateTravis.requests.get({
                     build_id: BUILD_ID
                 }, function (err, res) {
                     if (err) { return done(new Error(err)); }
@@ -52,24 +50,18 @@ module.exports = [
                     }), 'build request should not return errors');
 
                     // verify that the build was successfully triggered
-                    this.privateTravis.builds({
-                        id: BUILD_ID
-                    }, function (err, res) {
+                    this.privateTravis.builds(BUILD_ID).get(function (err, res) {
                         if (err) { return done(new Error(err)); }
 
                         assert(res.build.id === BUILD_ID);
                         assert(res.build.state === 'created');
 
                         // cancel the build
-                        this.privateTravis.builds.cancel({
-                            id: BUILD_ID
-                        }, function (err) {
+                        this.privateTravis.builds(BUILD_ID).cancel.post(function (err) {
                             if (err) { return done(new Error(err)); }
 
                             // verify that the build was succesfully canceled
-                            this.privateTravis.builds({
-                                id: BUILD_ID
-                            }, function (err, res) {
+                            this.privateTravis.builds(BUILD_ID).get(function (err, res) {
                                 if (err) { return done(new Error(err)); }
                                 
                                 assert(res.build.id === BUILD_ID);
@@ -89,9 +81,7 @@ module.exports = [
         tests: function () {
             it('/builds/:id/restart', function (done) {
                 // restart a build
-                this.privateTravis.builds.restart({
-                    id: BUILD_ID
-                }, function (err, res) {
+                this.privateTravis.builds(BUILD_ID).restart.post(function (err, res) {
                     if (err) { return done(new Error(err)); }
 
                     assert(res.hasOwnProperty('result'));
@@ -103,23 +93,17 @@ module.exports = [
                     }), 'build request should not return errors');
 
                     // verify that the build was successfully triggered
-                    this.privateTravis.builds({
-                        id: BUILD_ID
-                    }, function (err, res) {
+                    this.privateTravis.builds(BUILD_ID).get(function (err, res) {
                         if (err) { return done(new Error(err)); }
                         assert(res.build.id === BUILD_ID);
                         assert(res.build.state === 'created');
 
                         // cancel the build
-                        this.privateTravis.builds.cancel({
-                            id: BUILD_ID
-                        }, function (err) {
+                        this.privateTravis.builds(BUILD_ID).cancel.post(function (err) {
                             if (err) { return done(new Error(err)); }
 
                             // verify that the build was succesfully canceled
-                            this.privateTravis.builds({
-                                id: BUILD_ID
-                            }, function (err, res) {
+                            this.privateTravis.builds(BUILD_ID).get(function (err, res) {
                                 if (err) { return done(new Error(err)); }
                                 
                                 assert(res.build.id === BUILD_ID);

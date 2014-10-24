@@ -13,7 +13,7 @@ module.exports = [
             });
 
             it('/endpoints/', function (done) {
-                this.publicTravis.endpoints(function (err, res) {
+                this.publicTravis.endpoints.get(function (err, res) {
                     var homeRoutes = _.findWhere(res, {
                         name: 'Home'
                     });
@@ -36,9 +36,7 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/endpoints/:prefix', function (done) {
-                this.publicTravis.endpoints({
-                    prefix: 'endpoints'
-                }, function (err, res) {
+                this.publicTravis.endpoints('endpoints').get(function (err, res) {
                     if (err) {
                         return done(new Error(err));
                     }

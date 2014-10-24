@@ -22,6 +22,16 @@ var travis = new Travis({
 
 # API
 
+### Upgrade Notice (Migrating to 2.x)
+Due to the expanding travis api, there were an increasing number of cases where a function could conceivably map to several http endpoints. To eliminate that complexity, and to ensure that the entire api could be exposed, the api has been rewritten to be a much more transparent layer on top of the http interface. Url path segments that are exposed as objects, unless they are followed by url parameters, in which case they are exposed as functions that consume those arguments. The function that makes the api call is now just http verbs (`get`/`post`/etc).
+
+For instance, to use this library to call `GET /repos/:owner_name/:name/builds/:id`, you now do something like the following:
+```js
+travis.repos(ownerName, repoName).builds(buildId).get(function (err, res) {
+   // same res as before
+});
+```
+
 ### Authentication
 
 Many functions, such as [`travis.accounts`](https://api.travis-ci.org/docs/#Accounts), require authenticating as a user. 

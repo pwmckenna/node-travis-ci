@@ -1,5 +1,6 @@
 'use strict';
 
+var q = require('q');
 var assert = require('assert');
 require('should');
 
@@ -13,16 +14,14 @@ module.exports = [
             });
 
             it('/branches/', function (done) {
-                this.publicTravis.branches.get(function (err, res) {
-                    if (err) {
-                        return done(new Error(err));
-                    }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.branches.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('branches'));
                     assert(res.hasOwnProperty('commits'));
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     }

@@ -1,5 +1,7 @@
 'use strict';
 
+var q = require('q');
+
 module.exports = [
     {
         uri: '/docs/',
@@ -10,13 +12,11 @@ module.exports = [
             });
 
             it('/docs/', function (done) {
-                this.publicTravis.docs.get(function (err) {
-                    if (err) {
-                        return done(new Error(err));
-                    }
-
-                    done();
-                });
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.docs.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).nodeify(done);
             });
         }
     }

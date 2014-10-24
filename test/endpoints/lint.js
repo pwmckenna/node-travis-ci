@@ -1,5 +1,6 @@
 'use strict';
 
+var q = require('q');
 var fs = require('fs');
 var path = require('path');
 
@@ -11,12 +12,9 @@ module.exports = [
             it('/logs/:id', function (done) {
                 var configPath = path.resolve(__dirname, '../../.travis.yml');
                 var yml = fs.readFileSync(configPath);
-                this.publicTravis.lint.post(yml, function (err) {
-                    if (err) {
-                        return done(new Error(err));
-                    }
-                    done();
-                }.bind(this));
+                var defer = q.defer();
+                this.publicTravis.lint.post(yml, defer.makeNodeResolver());
+                defer.promise.nodeify(done);
             });
         }
     },
@@ -27,12 +25,9 @@ module.exports = [
             it('/logs/:id', function (done) {
                 var configPath = path.resolve(__dirname, '../../.travis.yml');
                 var yml = fs.readFileSync(configPath);
-                this.publicTravis.lint.put(yml, function (err) {
-                    if (err) {
-                        return done(new Error(err));
-                    }
-                    done();
-                }.bind(this));
+                var defer = q.defer();
+                this.publicTravis.lint.put(yml, defer.makeNodeResolver());
+                defer.promise.nodeify(done);
             });
         }
     }

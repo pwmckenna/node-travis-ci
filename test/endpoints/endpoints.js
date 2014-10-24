@@ -1,5 +1,7 @@
 'use strict';
 
+var q = require('q');
+var assert = require('assert');
 var _ = require('lodash');
 require('should');
 
@@ -13,21 +15,17 @@ module.exports = [
             });
 
             it('/endpoints/', function (done) {
-                this.publicTravis.endpoints.get(function (err, res) {
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.endpoints.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     var homeRoutes = _.findWhere(res, {
                         name: 'Home'
                     });
-
-                    if (!homeRoutes || !homeRoutes.hasOwnProperty('prefix') || homeRoutes.prefix !== '/') {
-                        return done('invalid endpoints response');
-                    }
-
-                    if (err) {
-                        return done(new Error(err));
-                    }
-
-                    done();
-                });
+                    var validResponse = homeRoutes && homeRoutes.hasOwnProperty('prefix') && homeRoutes.prefix === '/';
+                    assert(validResponse, 'invalid endpoints response');
+                }).nodeify(done);
             });
         }
     },
@@ -36,17 +34,14 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/endpoints/:prefix', function (done) {
-                this.publicTravis.endpoints('endpoints').get(function (err, res) {
-                    if (err) {
-                        return done(new Error(err));
-                    }
-
-                    if (!res || !res.hasOwnProperty('prefix') || res.prefix !== '/endpoints') {
-                        return done('invalid endpoints response');
-                    }
-
-                    done();
-                });
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.endpoints('endpoints').get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
+                    var validResponse = res && res.hasOwnProperty('prefix') && res.prefix === '/endpoints';
+                    assert(validResponse, 'invalid endpoints response');
+                }).nodeify(done);
             });
         }
     }

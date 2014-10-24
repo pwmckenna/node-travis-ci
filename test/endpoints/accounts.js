@@ -17,37 +17,27 @@ module.exports = [
 
             it('/accounts/', function (done) {
                 q.resolve().then(function () {
-
-                    var accounts = q.defer();
-                    this.publicTravis.accounts.get({}, accounts.makeNodeResolver());
-                    return accounts.promise.then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.accounts.get({}, defer.makeNodeResolver());
+                    return defer.promise.then(function () {
                         return q.reject('Expected an error');
                     }, function () {
                         return q.resolve();
                     });
-
                 }.bind(this)).then(function () {
-
-                    var accounts = q.defer();
-                    this.privateTravis.accounts.get({}, accounts.makeNodeResolver());
-                    return accounts.promise;
-
-                }.bind(this)).then(function () {
-                    done();
-                }).fail(function (err) {
-                    done(new Error(err));
-                });
+                    var defer = q.defer();
+                    this.privateTravis.accounts.get({}, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).nodeify(done);
             });
 
             it('/accounts/', function (done) {
                 q.resolve().then(function () {
-                    var accounts = q.defer();
-                    this.privateTravis.accounts.get({}, accounts.makeNodeResolver());
-                    return accounts.promise;
+                    var defer = q.defer();
+                    this.privateTravis.accounts.get({}, defer.makeNodeResolver());
+                    return defer.promise;
                 }.bind(this)).then(function (res) {
-
                     var accounts = res.accounts;
-
                     var hook = _.findWhere(accounts, {
                         id: 5186,
                         name: 'Patrick Williams',
@@ -56,12 +46,7 @@ module.exports = [
                     });
                     assert(hook);
                     assert(hook.hasOwnProperty('repos_count'));
-
-                }).then(function () {
-                    done();
-                }).fail(function (err) {
-                    done(new Error(err));
-                });
+                }).nodeify(done);
             });
         }
     }

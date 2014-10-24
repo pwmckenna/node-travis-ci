@@ -1,5 +1,6 @@
 'use strict';
 
+var q = require('q');
 require('should');
 var assert = require('assert');
 
@@ -16,25 +17,27 @@ module.exports = [
             });
 
             it('does not have permission to view broadcasts without authenticating', function (done) {
-                this.publicTravis.broadcasts.get({}, function (err) {
-                    if (!err) { return done(new Error('expected an error')); }
-
-                    this.privateTravis.broadcasts.get({}, function (err) {
-                        if (err) { return done(new Error(err)); }
-
-                        done();
-                    });
-                }.bind(this));
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.broadcasts.get({}, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function () {
+                    throw new Error('expected an error');
+                }, function () {}).then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.broadcasts.get({}, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).nodeify(done);
             });
 
             it('gets broadcasts after authenticating', function (done) {
-                this.privateTravis.broadcasts.get({}, function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.broadcasts.get({}, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('broadcasts'));
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     }

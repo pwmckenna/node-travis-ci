@@ -37,7 +37,6 @@ describe('travis ci api test suite', function () {
         var routes = JSON.parse(fs.readFileSync(routesPath).toString());
 
         travis.endpoints.get(function (err, res) {
-            console.warn(err, typeof res);
             if (!_.isEqual(routes, res)) {
                 return done(new Error('stale route definitions'));
             }

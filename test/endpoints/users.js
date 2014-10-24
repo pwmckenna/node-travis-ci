@@ -1,5 +1,6 @@
 'use strict';
 
+var q = require('q');
 var assert = require('assert');
 var _ = require('lodash');
 
@@ -9,20 +10,18 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/users/', function (done) {
-                this.privateTravis.users.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.users.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     var user = res.user;
                     assert(user.id === 5186);
                     assert(user.name === 'Patrick Williams');
                     assert(user.login === 'pwmckenna');
 
-                    if (!user) {
-                        return done(new Error('user did not contain expected info for pwmckenna'));
-                    }
-
-                    done();
-                });
+                    assert(user, 'user did not contain expected info for pwmckenna');
+                }).nodeify(done);
             });
         }
     },
@@ -31,14 +30,14 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/users/permissions', function (done) {
-                this.privateTravis.users.permissions.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.users.permissions.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('permissions'));
                     assert(_.isArray(res.permissions));
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -47,21 +46,18 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/users/:id', function (done) {
-                this.privateTravis.users(5186).get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.users(5186).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     var user = res.user;
                     assert(user.id === 5186);
                     assert(user.name === 'Patrick Williams');
                     assert(user.login === 'pwmckenna');
 
-                    if (!user) {
-                        return done(new Error('user did not contain expected info for pwmckenna'));
-                    }
-
-                    done();
-                });
-
+                    assert(user, 'user did not contain expected info for pwmckenna');
+                }).nodeify(done);
             });
         }
     },
@@ -69,7 +65,7 @@ module.exports = [
         uri: '/users/:id?',
         verb: 'PUT',
         tests: function () {
-            console.warn('/users/:id? - NO WAY TO DISTINGUISH BETWEEN GET/PUT ROUTES');
+            console.warn('PUT /users/:id? - NO TESTS');
         }
     },
     {
@@ -77,14 +73,14 @@ module.exports = [
         verb: 'POST',
         tests: function () {
             it('/users/sync', function (done) {
-                this.privateTravis.users.sync.post(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.users.sync.post(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('result'));
                     assert(res.result === true);
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     }

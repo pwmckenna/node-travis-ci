@@ -1,5 +1,6 @@
 'use strict';
 
+var q = require('q');
 var _ = require('lodash');
 var assert = require('assert');
 
@@ -15,26 +16,28 @@ var PROJECT_BTAPP_REPO_ID = 80511;
 var PROJECT_BTAPP_SLUG = 'bittorrenttorque/btapp';
 var PROJECT_BTAPP_DESCRIPTION = 'Btapp.js is a backbone library that provides easy access to Torque/BitTorrent/uTorrent clients.';
 
+var BTAPP_REPO_INFO = {
+    id: PROJECT_BTAPP_REPO_ID,
+    slug: PROJECT_BTAPP_SLUG,
+    description: PROJECT_BTAPP_DESCRIPTION
+};
+
 module.exports = [
     {
         uri: '/repos/',
         verb: 'GET',
         tests: function () {
             it('/repos/', function (done) {
-                this.publicTravis.repos({
-                    member: 'pwmckenna'
-                }, function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos().get({
+                        member: 'pwmckenna'
+                    }, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('repos'));
-                    assert(_.findWhere(res.repos, {
-                        id: PROJECT_BTAPP_REPO_ID,
-                        slug: PROJECT_BTAPP_SLUG,
-                        description: PROJECT_BTAPP_DESCRIPTION
-                    }));
-
-                    done();
-                });
+                    assert(_.findWhere(res.repos, BTAPP_REPO_INFO));
+                }).nodeify(done);
             });
         }
     },
@@ -43,20 +46,18 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name', function (done) {
-                this.publicTravis.repos({
-                    owner_name: 'pwmckenna'
-                }, function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos('pwmckenna').get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('repos'));
                     assert(_.findWhere(res.repos, {
                         id: PROJECT_TRAVIS_REPO_ID,
                         slug: PROJECT_TRAVIS_SLUG,
                         description: PROJECT_TRAVIS_DESCRIPTION
                     }));
-
-                    done();
-                }.bind(this));
+                }).nodeify(done);
             });
         }
     },
@@ -65,18 +66,16 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id', function (done) {
-                this.publicTravis.repos({
-                    id: PROJECT_TRAVIS_REPO_ID
-                }, function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('repo'));
                     assert(res.repo.id === PROJECT_TRAVIS_REPO_ID);
                     assert(res.repo.slug === PROJECT_TRAVIS_SLUG);
                     assert(res.repo.description === PROJECT_TRAVIS_DESCRIPTION);
-
-                    done();
-                }.bind(this));
+                }).nodeify(done);
             });
         }
     },
@@ -85,15 +84,15 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id/cc', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).cc.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).cc.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('repo'));
                     assert(res.repo.hasOwnProperty('slug'));
                     assert(res.repo.slug === PROJECT_TRAVIS_SLUG);
-
-                    done();
-                }.bind(this));
+                }).nodeify(done);
             });
         }
     },
@@ -102,12 +101,13 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id/key', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).key.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).key.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.key === PROJECT_TRAVIS_PUBLIC_KEY);
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -115,7 +115,7 @@ module.exports = [
         uri: '/repos/:id/key',
         verb: 'POST',
         tests: function () {
-            console.warn('/repos/:id/key - NO WAY TO DISTINGUISH BETWEEN GET/POST ROUTES');
+            console.warn('POST /repos/:id/key - NO TESTS');
         }
     },
     {
@@ -123,9 +123,11 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:repository_id/branches', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).branches.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).branches.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('branches'));
                     assert(res.hasOwnProperty('commits'));
 
@@ -143,9 +145,7 @@ module.exports = [
                         commit_id: masterCommit.id
                     });
                     assert(masterBranch);
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -156,18 +156,18 @@ module.exports = [
             it('/repos/:repository_id/branches/:branch', function (done) {
                 var BRANCH_NAME = 'master';
 
-                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).branches(BRANCH_NAME).get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).branches(BRANCH_NAME).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('branch'));
                     assert(res.hasOwnProperty('commit'));
 
                     assert(res.branch.repository_id === PROJECT_TRAVIS_REPO_ID);
                     assert(res.branch.commit_id === res.commit.id);
                     assert(res.commit.branch === BRANCH_NAME);
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -176,12 +176,14 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:repository_id/caches', function (done) {
-                this.privateTravis.repos(PROJECT_TRAVIS_REPO_ID).caches.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.repos(PROJECT_TRAVIS_REPO_ID).caches.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('caches'));
                     assert(_.isArray(res.caches));
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -189,7 +191,7 @@ module.exports = [
         uri: '/repos/:repository_id/caches',
         verb: 'DELETE',
         tests: function () {
-            console.warn('/repos/:repository_id/caches - NO WAY TO DISTINGUISH BETWEEN GET/DELETE ROUTES');
+            console.warn('DELETE /repos/:repository_id/caches - NO TESTS');
         }
     },
     {
@@ -197,16 +199,16 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('repo'));
                     assert(res.repo.id === PROJECT_TRAVIS_REPO_ID);
                     assert(res.repo.slug === PROJECT_TRAVIS_SLUG);
                     assert(res.repo.description === PROJECT_TRAVIS_DESCRIPTION);
-
-                    done();
-                }.bind(this));
+                }).nodeify(done);
             });
         }
     },
@@ -215,8 +217,11 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:id/settings', function (done) {
-                this.privateTravis.repos(PROJECT_TRAVIS_REPO_ID).settings.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.repos(PROJECT_TRAVIS_REPO_ID).settings.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(_.isEqual(res, {
                         settings: {
                             builds_only_with_travis_yml: false,
@@ -227,9 +232,7 @@ module.exports = [
                             timeout_log_silence: null
                         }
                     }));
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -237,7 +240,7 @@ module.exports = [
         uri: '/repos/:id/settings',
         verb: 'PATCH',
         tests: function () {
-            console.warn('/repos/:id/settings - NO WAY TO DISTINGUISH BETWEEN GET/PATCH ROUTES');
+            console.warn('PATCH /repos/:id/settings - NO TESTS');
         }
     },
     {
@@ -245,14 +248,14 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/builds', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).builds.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).builds.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('builds'));
                     assert(res.hasOwnProperty('commits'));
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -263,14 +266,14 @@ module.exports = [
             var BUILD_ID = 13178154;
 
             it('/repos/:owner_name/:name/builds/:id', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).builds(BUILD_ID).get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).builds(BUILD_ID).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('build'));
                     assert(res.hasOwnProperty('commit'));
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -279,15 +282,15 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/cc', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).cc.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_REPO_ID).cc.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('repo'));
                     assert(res.repo.hasOwnProperty('slug'));
                     assert(res.repo.slug === PROJECT_TRAVIS_SLUG);
-
-                    done();
-                }.bind(this));
+                }).nodeify(done);
             });
         }
     },
@@ -296,12 +299,13 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/key', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).key.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).key.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.key === PROJECT_TRAVIS_PUBLIC_KEY);
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -309,7 +313,7 @@ module.exports = [
         uri: '/repos/:owner_name/:name/key',
         verb: 'POST',
         tests: function () {
-            console.warn('/repos/:owner_name/:name/key - NO WAY TO DISTINGUISH BETWEEN GET/POST ROUTES');
+            console.warn('POST /repos/:owner_name/:name/key - NO TESTS');
         }
     },
     {
@@ -317,9 +321,11 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/branches', function (done) {
-                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).branches.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).branches.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('branches'));
                     assert(res.hasOwnProperty('commits'));
 
@@ -337,9 +343,7 @@ module.exports = [
                         commit_id: masterCommit.id
                     });
                     assert(masterBranch);
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -350,18 +354,18 @@ module.exports = [
             it('/repos/:owner_name/:name/branches/:branch', function (done) {
                 var BRANCH_NAME = 'master';
 
-                this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).branches(BRANCH_NAME).get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).branches(BRANCH_NAME).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('branch'));
                     assert(res.hasOwnProperty('commit'));
 
                     assert(res.branch.repository_id === PROJECT_TRAVIS_REPO_ID);
                     assert(res.branch.commit_id === res.commit.id);
                     assert(res.commit.branch === BRANCH_NAME);
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -370,12 +374,14 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/repos/:owner_name/:name/caches', function (done) {
-                this.privateTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).caches.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.repos(PROJECT_TRAVIS_OWNER_NAME, PROJECT_TRAVIS_NAME).caches.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('caches'));
                     assert(_.isArray(res.caches));
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -383,7 +389,7 @@ module.exports = [
         uri: '/repos/:owner_name/:name/caches',
         verb: 'DELETE',
         tests: function () {
-            console.warn('/repos/:owner_name/:name/caches - NO WAY TO DISTINGUISH BETWEEN GET/DELETE ROUTES');
+            console.warn('DELETE /repos/:owner_name/:name/caches - NO TESTS');
         }
     }
 ];

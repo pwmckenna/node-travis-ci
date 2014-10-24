@@ -1,5 +1,6 @@
 'use strict';
 
+var q = require('q');
 var assert = require('assert');
 
 module.exports = [
@@ -7,14 +8,14 @@ module.exports = [
         uri: '/auth/authorize',
         verb: 'GET',
         tests: function () {
-            console.warn('/auth/authorize NOT IMPLEMENTED');
+            console.warn('GET /auth/authorize NOT IMPLEMENTED');
         }
     },
     {
         uri: '/auth/access_token',
         verb: 'POST',
         tests: function () {
-            console.warn('/auth/access_token NOT IMPLEMENTED');
+            console.warn('POST /auth/access_token NOT IMPLEMENTED');
         }
     },
     {
@@ -22,28 +23,27 @@ module.exports = [
         verb: 'POST',
         tests: function () {
             it('/auth/github', function (done) {
-                this.publicTravis.auth.github.post({
-                    'asdf': 'asdf'
-                }, function (err) {
-                    if (err) {
-                        done();
-                    } else {
-                        done(new Error('expected an error'));
-                    }
-                });
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.auth.github.post({
+                        'asdf': 'asdf'
+                    }, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function () {
+                    throw new Error('expected an error');
+                }, function () {}).nodeify(done);
             });
 
             it('/auth/github', function (done) {
-                this.publicTravis.auth.github.post({
-                    github_token: process.env.GITHUB_OAUTH_TOKEN
-                }, function (err, res) {
-                    if (err) {
-                        done(new Error(err));
-                    } else {
-                        assert(res.hasOwnProperty('access_token'));
-                        done();
-                    }
-                });
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.auth.github.post({
+                        github_token: process.env.GITHUB_OAUTH_TOKEN
+                    }, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
+                    assert(res.hasOwnProperty('access_token'));
+                }).nodeify(done);
             });
         }
     },
@@ -51,21 +51,21 @@ module.exports = [
         uri: '/auth/handshake',
         verb: 'GET',
         tests: function () {
-            console.warn('/auth/handshake NOT USABLE VIA API');
+            console.warn('GET /auth/handshake NOT USABLE VIA API');
         }
     },
     {
         uri: '/auth/post_message',
         verb: 'GET',
         tests: function () {
-            console.warn('/auth/post_message NOT USABLE VIA API');
+            console.warn('GET /auth/post_message NOT USABLE VIA API');
         }
     },
     {
         uri: '/auth/post_message/iframe',
         verb: 'GET',
         tests: function () {
-            console.warn('/auth/post_message/iframe NOT USABLE VIA API');
+            console.warn('GET /auth/post_message/iframe NOT USABLE VIA API');
         }
     }
 ];

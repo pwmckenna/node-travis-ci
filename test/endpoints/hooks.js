@@ -1,5 +1,7 @@
 'use strict';
 
+var assert = require('assert');
+var q = require('q');
 require('should');
 var _ = require('lodash');
 
@@ -9,21 +11,25 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/hooks/ - does not have permission to view hooks without authenticating', function (done) {
-                this.publicTravis.hooks.get(function (err) {
-                    if (!err) { return done(new Error('expected an error')); }
-
-                    this.privateTravis.hooks(function (err) {
-                        if (err) { return done(new Error(err)); }
-
-                        done();
-                    });
-                }.bind(this));
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.hooks.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function () {
+                    throw new Error('expected an error');
+                }, function () {}).then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.hooks.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).nodeify(done);
             });
 
             it('/hooks/', function (done) {
-                this.privateTravis.hooks.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.hooks.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     var hooks = res.hooks;
 
                     var hook = _.findWhere(hooks, {
@@ -35,12 +41,8 @@ module.exports = [
                         admin: true
                     });
 
-                    if (!hook) {
-                        return done(new Error('hooks did not contain expected hook for node-travis-ci'));
-                    }
-
-                    done();
-                });
+                    assert(hook, 'hooks did not contain expected hook for node-travis-ci');
+                }).nodeify(done);
             });
         }
     },
@@ -49,9 +51,11 @@ module.exports = [
         verb: 'PUT',
         tests: function () {
             it('/hooks/:id - toggles the hook active property', function (done) {
-                this.privateTravis.hooks.get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.hooks.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     var hooks = res.hooks;
 
                     var hook = _.findWhere(hooks, {
@@ -63,67 +67,60 @@ module.exports = [
                         admin: true
                     });
 
-                    if (!hook) {
-                        console.warn(hooks);
-                        return done(new Error('hooks did not contain expected hook for node-travis-ci'));
-                    }
-
+                    assert(hook, 'hooks did not contain expected hook for node-travis-ci');
+                    return hook;
+                }).then(function (hook) {
+                    var defer = q.defer();
                     this.privateTravis.hooks(hook.id).put({
                         hook: {
                             active: false
                         }
-                    }, function (err) {
-                        if (err) { return done(new Error(err)); }
+                    }, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.hooks.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
+                    var hooks = res.hooks;
 
-                        this.privateTravis.hooks.get(function (err, res) {
-                            if (err) { return done(new Error(err)); }
+                    var hook = _.findWhere(hooks, {
+                        name: 'node-travis-ci',
+                        owner_name: 'pwmckenna',
+                        description: 'node library to access the Travis-CI API',
+                        active: false,
+                        private: false,
+                        admin: true
+                    });
 
-                            var hooks = res.hooks;
+                    assert(hook, 'hooks did not contain expected hook for node-travis-ci');
+                    return hook;
+                }).then(function (hook) {
+                    var defer = q.defer();
+                    this.privateTravis.hooks(hook.id).put({
+                        hook: {
+                            active: true
+                        }
+                    }, defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function () {
+                    var defer = q.defer();
+                    this.privateTravis.hooks.get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
+                    var hooks = res.hooks;
 
-                            var hook = _.findWhere(hooks, {
-                                name: 'node-travis-ci',
-                                owner_name: 'pwmckenna',
-                                description: 'node library to access the Travis-CI API',
-                                active: false,
-                                private: false,
-                                admin: true
-                            });
+                    var hook = _.findWhere(hooks, {
+                        name: 'node-travis-ci',
+                        owner_name: 'pwmckenna',
+                        description: 'node library to access the Travis-CI API',
+                        active: true,
+                        private: false,
+                        admin: true
+                    });
 
-                            if (!hook) {
-                                return done(new Error('hooks did not contain expected hook for node-travis-ci'));
-                            }
-
-                            this.privateTravis.hooks(hook.id).put({
-                                hook: {
-                                    active: true
-                                }
-                            }, function (err) {
-                                if (err) { return done(new Error(err)); }
-
-                                this.privateTravis.hooks.get(function (err, res) {
-                                    if (err) { return done(new Error(err)); }
-
-                                    var hooks = res.hooks;
-
-                                    var hook = _.findWhere(hooks, {
-                                        name: 'node-travis-ci',
-                                        owner_name: 'pwmckenna',
-                                        description: 'node library to access the Travis-CI API',
-                                        active: true,
-                                        private: false,
-                                        admin: true
-                                    });
-
-                                    if (!hook) {
-                                        return done(new Error('hooks did not contain expected hook for node-travis-ci'));
-                                    }
-
-                                    done();
-                                });
-                            }.bind(this));
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
+                    assert(hook, 'hooks did not contain expected hook for node-travis-ci');
+                }).nodeify(done);
             });
         }
     }

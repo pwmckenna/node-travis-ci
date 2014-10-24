@@ -1,7 +1,7 @@
 'use strict';
 
+var q = require('q');
 var assert = require('assert');
-var _ = require('lodash');
 require('should');
 
 var BUILD_ID = 13284153;
@@ -11,7 +11,7 @@ module.exports = [
         uri: '/builds/',
         verb: 'GET',
         tests: function () {
-            console.warn('/builds/ - TOO INEFFICIENT FOR USE');
+            console.warn('GET /builds/ - TOO INEFFICIENT FOR USE');
         }
     },
     {
@@ -19,14 +19,14 @@ module.exports = [
         verb: 'GET',
         tests: function () {
             it('/builds/:id', function (done) {
-                this.publicTravis.builds(BUILD_ID).get(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
+                q.resolve().then(function () {
+                    var defer = q.defer();
+                    this.publicTravis.builds(BUILD_ID).get(defer.makeNodeResolver());
+                    return defer.promise;
+                }.bind(this)).then(function (res) {
                     assert(res.hasOwnProperty('build'));
                     assert(res.build.id === BUILD_ID);
-
-                    done();
-                });
+                }).nodeify(done);
             });
         }
     },
@@ -34,87 +34,14 @@ module.exports = [
         uri: '/builds/:id/cancel',
         verb: 'POST',
         tests: function () {
-            it('/builds/:id/cancel', function (done) {
-                // trigger a build
-                this.privateTravis.requests.get({
-                    build_id: BUILD_ID
-                }, function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
-                    assert(res.hasOwnProperty('result'));
-                    assert(res.result === true);
-                    assert(res.hasOwnProperty('flash'));
-                    assert(_.isArray(res.flash));
-                    assert(!_.any(res.flash, function (flash) {
-                        return flash.hasOwnProperty('error');
-                    }), 'build request should not return errors');
-
-                    // verify that the build was successfully triggered
-                    this.privateTravis.builds(BUILD_ID).get(function (err, res) {
-                        if (err) { return done(new Error(err)); }
-
-                        assert(res.build.id === BUILD_ID);
-                        assert(res.build.state === 'created');
-
-                        // cancel the build
-                        this.privateTravis.builds(BUILD_ID).cancel.post(function (err) {
-                            if (err) { return done(new Error(err)); }
-
-                            // verify that the build was succesfully canceled
-                            this.privateTravis.builds(BUILD_ID).get(function (err, res) {
-                                if (err) { return done(new Error(err)); }
-                                
-                                assert(res.build.id === BUILD_ID);
-                                assert(res.build.state === 'canceled');
-
-                                done();
-                            });
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
-            });
+            console.warn('POST /builds/:id/cancel - NO TESTS');
         }
     },
     {
         uri: '/builds/:id/restart',
         verb: 'POST',
         tests: function () {
-            it('/builds/:id/restart', function (done) {
-                // restart a build
-                this.privateTravis.builds(BUILD_ID).restart.post(function (err, res) {
-                    if (err) { return done(new Error(err)); }
-
-                    assert(res.hasOwnProperty('result'));
-                    assert(res.result === true);
-                    assert(res.hasOwnProperty('flash'));
-                    assert(_.isArray(res.flash));
-                    assert(!_.any(res.flash, function (flash) {
-                        return flash.hasOwnProperty('error');
-                    }), 'build request should not return errors');
-
-                    // verify that the build was successfully triggered
-                    this.privateTravis.builds(BUILD_ID).get(function (err, res) {
-                        if (err) { return done(new Error(err)); }
-                        assert(res.build.id === BUILD_ID);
-                        assert(res.build.state === 'created');
-
-                        // cancel the build
-                        this.privateTravis.builds(BUILD_ID).cancel.post(function (err) {
-                            if (err) { return done(new Error(err)); }
-
-                            // verify that the build was succesfully canceled
-                            this.privateTravis.builds(BUILD_ID).get(function (err, res) {
-                                if (err) { return done(new Error(err)); }
-                                
-                                assert(res.build.id === BUILD_ID);
-                                assert(res.build.state === 'canceled');
-
-                                done();
-                            });
-                        }.bind(this));
-                    }.bind(this));
-                }.bind(this));
-            });
+            console.warn('POST /builds/:id/restart - NO TESTS');
         }
     }
 ];

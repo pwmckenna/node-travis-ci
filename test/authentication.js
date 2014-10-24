@@ -20,7 +20,6 @@ describe('travis ci authentication test suite', function () {
         travis.auth.github.post({
             github_token: process.env.GITHUB_OAUTH_TOKEN
         }, function (err, res) {
-            console.warn(err, res);
             if (err) { return done(new Error(err)); }
 
             travis.authenticate({

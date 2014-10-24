@@ -25,7 +25,6 @@ module.exports = [
             it('/config', function (done) {
                 this.publicTravis.config.get(function (err, res) {
                     if (err) { return done(new Error(err)); }
-                    console.log(JSON.stringify(res, null, 4));
                     assert(_.isEqual(res, {
                         config: {
                             host: 'travis-ci.org',

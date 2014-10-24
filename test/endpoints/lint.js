@@ -11,7 +11,6 @@ module.exports = [
             it('/logs/:id', function (done) {
                 var configPath = path.resolve(__dirname, '../../.travis.yml');
                 var yml = fs.readFileSync(configPath);
-                console.warn('yml', yml);
                 this.publicTravis.lint.post(yml, function (err) {
                     if (err) {
                         return done(new Error(err));
@@ -28,7 +27,6 @@ module.exports = [
             it('/logs/:id', function (done) {
                 var configPath = path.resolve(__dirname, '../../.travis.yml');
                 var yml = fs.readFileSync(configPath);
-                console.warn('yml', yml);
                 this.publicTravis.lint.put(yml, function (err) {
                     if (err) {
                         return done(new Error(err));

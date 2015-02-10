@@ -1,5 +1,7 @@
 'use strict';
 
+require('q').longStackSupport = true;
+
 var fs = require('fs');
 var path = require('path');
 var TravisCi = require('..');

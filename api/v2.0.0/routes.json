@@ -287,15 +287,15 @@
                 "scope": "public"
             },
             {
-                "uri": "/repos/:owner_name",
-                "verb": "GET",
-                "doc": "Retrieves repositories for a given owner.",
-                "scope": "public"
-            },
-            {
                 "uri": "/repos/:id",
                 "verb": "GET",
                 "doc": "Gets the repository with the given id.\n\n### Response\n\njson(:repository)",
+                "scope": "public"
+            },
+            {
+                "uri": "/repos/:owner_name",
+                "verb": "GET",
+                "doc": "Retrieves repositories for a given owner.",
                 "scope": "public"
             },
             {

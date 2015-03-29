@@ -464,7 +464,7 @@ travis.repos('pwmckenna', 'node-travis-ci').builds.get(function (err, res) {
 Requests calls require [authentication](#Authentication).
 
 ```js
-travis.requests({
+travis.requests.post(({
     build_id: BUILD_ID    
 }, function (err, res) {
     // res => {

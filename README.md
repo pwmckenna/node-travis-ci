@@ -18,6 +18,14 @@ var travis = new Travis({
     version: '2.0.0',
     pro: true
 });
+
+// To set custom headers
+var travis = new Travis({
+  version: '2.0.0',
+  headers: {
+    'user-agent': 'My Custom User Agent'
+  }
+});
 ```
 
 # API

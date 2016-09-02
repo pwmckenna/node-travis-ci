@@ -30,6 +30,9 @@ domain.run(function () {
     var subCommands = _.select(argv, function (arg) {
         return arg.indexOf('--') !== 0;
     });
+    if (subCommands.length === 0) {
+      throw new Error('no subcommand provided'); // TODO: display help
+    }
     // Parse off args that will be passed as args to the function.
     var args = _(argv).select(function (arg) {
         return arg.indexOf('--') === 0;

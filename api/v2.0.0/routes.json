@@ -477,6 +477,43 @@
         ]
     },
     {
+        "name": "SettingsEnvVars",
+        "doc": "",
+        "prefix": "/settings/env_vars",
+        "routes": [
+            {
+                "uri": "/settings/env_vars/",
+                "verb": "GET",
+                "doc": "",
+                "scope": "private"
+            },
+            {
+                "uri": "/settings/env_vars/:id",
+                "verb": "GET",
+                "doc": "",
+                "scope": "private"
+            },
+            {
+                "uri": "/settings/env_vars/",
+                "verb": "POST",
+                "doc": "",
+                "scope": "private"
+            },
+            {
+                "uri": "/settings/env_vars/:id",
+                "verb": "PATCH",
+                "doc": "",
+                "scope": "private"
+            },
+            {
+                "uri": "/settings/env_vars/:id",
+                "verb": "DELETE",
+                "doc": "",
+                "scope": "private"
+            }
+        ]
+    },
+    {
         "name": "Uptime",
         "doc": "",
         "prefix": "/uptime",

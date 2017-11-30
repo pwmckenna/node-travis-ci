@@ -19,6 +19,12 @@ var travis = new Travis({
     pro: true
 });
 
+// To access the Travis-CI Enterprise API
+var travis = new Travis({
+    version: '2.0.0',
+    enterprise: 'https://travis.example.com'
+});
+
 // To set custom headers
 var travis = new Travis({
   version: '2.0.0',
@@ -60,7 +66,7 @@ travis.auth.github.post({
 });
 ```
 
-As a convenience, `authenticate` also accepts github tokens, or github credentials (which are only sent to github) and performs the necessary requests to aquire a travis access token. For example:
+As a convenience, `authenticate` also accepts github tokens, or github credentials (which are only sent to github) and performs the necessary requests to acquire a travis access token. For example:
 
 ```js
 travis.authenticate({

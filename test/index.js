@@ -18,6 +18,26 @@ describe('travis ci api test suite', function () {
         thrower.should.throw();
     });
 
+    it('expects enterprise to be valid URL', function () {
+        var thrower = function () {
+            new TravisCi({
+                version: '2.0.0',
+                enterprise: 'some string'
+            });
+        };
+        thrower.should.throw();
+    });
+
+    it('enterpise url i protocol + host + /api', function () {
+        var travis = new TravisCi({
+            version: '2.0.0',
+            enterprise: 'https://travis.example.com/something-weird'
+        });
+
+        travis.travisUrl.should.equal('https://travis.example.com');
+        travis.travisApiUrl.should.equal('https://travis.example.com/api');
+    });
+
     it('only supports version 2.0.0', function () {
         var thrower = function () {
             new TravisCi({
@@ -126,7 +146,7 @@ describe('travis ci api test suite', function () {
             // and if that test exists, run it
             _.each(routeSection.routes, function (route) {
                 var testName = 'tests ' + route.verb + ' ' + route.uri;
-                
+
                 it(testName, function () {
                     if (!_.findWhere(routeSectionEndpointTests, {
                         uri: route.uri,

@@ -28,13 +28,12 @@ describe('travis ci api test suite', function () {
         thrower.should.throw();
     });
 
-    it('enterpise url i protocol + host + /api', function () {
+    it('makes enterprise url be protocol + host + /api', function () {
         var travis = new TravisCi({
             version: '2.0.0',
             enterprise: 'https://travis.example.com/something-weird'
         });
 
-        travis.travisUrl.should.equal('https://travis.example.com');
         travis.travisApiUrl.should.equal('https://travis.example.com/api');
     });
 

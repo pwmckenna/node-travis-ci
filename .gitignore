@@ -1,3 +1,4 @@
+# gitignore
 /node_modules/
 files
 
@@ -12,3 +13,8 @@ lib-cov
 *.sqlite
 
 .env
+
+# Only apps should have lockfiles
+npm-shrinkwrap.json
+package-lock.json
+yarn.lock

@@ -55,7 +55,7 @@ describe('travis ci api test suite', function () {
             version: '2.0.0'
         });
         var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
-        var routes = JSON.parse(fs.readFileSync(routesPath).toString());
+        var routes = JSON.parse(String(fs.readFileSync(routesPath)));
 
         travis.endpoints.get(function (err, res) {
             if (!_.isEqual(routes, res)) {
@@ -89,7 +89,7 @@ describe('travis ci api test suite', function () {
 
     describe('ensures that there are no extraneous route tests', function () {
         var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
-        var routes = JSON.parse(fs.readFileSync(routesPath).toString());
+        var routes = JSON.parse(String(fs.readFileSync(routesPath)));
 
         _.each(routes, function (routeSection) {
             var routeSectionTestsPath = path.resolve(__dirname, 'endpoints', routeSection.name.toLowerCase());
@@ -114,7 +114,7 @@ describe('travis ci api test suite', function () {
 
     describe('ensures that there are no extraneous test suite files', function () {
         var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
-        var routes = JSON.parse(fs.readFileSync(routesPath).toString());
+        var routes = JSON.parse(String(fs.readFileSync(routesPath)));
 
         var routeSectionNames = _.map(routes, function (routeSection) {
             return routeSection.name.toLowerCase();
@@ -135,7 +135,7 @@ describe('travis ci api test suite', function () {
 
     describe('ensures that each endpoint has a test suite', function () {
         var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
-        var routes = JSON.parse(fs.readFileSync(routesPath).toString());
+        var routes = JSON.parse(String(fs.readFileSync(routesPath)));
 
         _.each(routes, function (routeSection) {
             var routeSectionTestsPath = path.resolve(__dirname, 'endpoints', routeSection.name.toLowerCase());
@@ -160,7 +160,7 @@ describe('travis ci api test suite', function () {
 
     describe('endpoint test suite', function () {
         var routesPath = path.resolve(__dirname, '../api/v2.0.0/routes.json');
-        var routes = JSON.parse(fs.readFileSync(routesPath).toString());
+        var routes = JSON.parse(String(fs.readFileSync(routesPath)));
 
         _.each(routes, function (routeSection) {
             var routeSectionTestsPath = path.resolve(__dirname, 'endpoints', routeSection.name.toLowerCase());

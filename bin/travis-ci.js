@@ -8,7 +8,7 @@ var domain = require('domain').create();
 var coerseType = function (arg) {
     var num = parseInt(arg, 10);
     var ret;
-    if (_.isNaN(num) || Number(num).toString() !== arg) {
+    if (_.isNaN(num) || String(Number(num)) !== arg) {
         ret = arg;
     } else {
         ret = num;
